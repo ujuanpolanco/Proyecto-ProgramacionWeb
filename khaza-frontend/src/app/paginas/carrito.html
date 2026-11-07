@@ -1,0 +1,107 @@
+@if (pedidoCreado) {
+
+  <!-- 3. Pedido registrado: falta confirmarlo por WhatsApp -->
+  <div class="card card-body text-center p-5 col-lg-7 mx-auto">
+    <i class="bi bi-check-circle text-success display-4" aria-hidden="true"></i>
+    <h1 class="h3 mt-3">¡Pedido #{{ pedidoCreado.id }} registrado!</h1>
+    <p>Quedó guardado con estado <strong>Pendiente</strong>. Para terminar, envía el resumen a KHAZA por
+      WhatsApp y allí coordinan el pago y el envío.</p>
+    <a [href]="enlaceWhatsapp" target="_blank" rel="noopener" class="btn btn-success btn-lg">
+      <i class="bi bi-whatsapp" aria-hidden="true"></i> Confirmar por WhatsApp
+    </a>
+    <a routerLink="/mis-pedidos" class="btn btn-link mt-2">Ver mis pedidos</a>
+  </div>
+
+} @else if (carrito.items.length === 0) {
+
+  <h1 class="h2 mb-4">Tu carrito</h1>
+  <div class="alert alert-light">
+    Tu carrito está vacío. <a routerLink="/" class="alert-link">Ir al catálogo</a>
+  </div>
+
+} @else {
+
+  <h1 class="h2 mb-4">Tu carrito</h1>
+
+  <!-- 1. Productos del carrito -->
+  <div class="table-responsive">
+    <table class="table align-middle bg-white">
+      <thead>
+        <tr>
+          <th scope="col">Producto</th>
+          <th scope="col">Talla</th>
+          <th scope="col">Precio</th>
+          <th scope="col" class="col-cantidad">Cantidad</th>
+          <th scope="col">Subtotal</th>
+          <th scope="col"><span class="visually-hidden">Acciones</span></th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (item of carrito.items; track $index; let i = $index) {
+          <tr>
+            <td>{{ item.producto.nombre }}</td>
+            <td>{{ item.talla }}</td>
+            <td>{{ item.producto.precio | currency:'COP':'symbol-narrow':'1.0-0' }}</td>
+            <td>
+              <input type="number" class="form-control form-control-sm" min="0"
+                     [(ngModel)]="item.cantidad" (change)="cambiarCantidad(i)"
+                     [attr.aria-label]="'Cantidad de ' + item.producto.nombre">
+            </td>
+            <td>{{ item.producto.precio * item.cantidad | currency:'COP':'symbol-narrow':'1.0-0' }}</td>
+            <td>
+              <button class="btn btn-outline-danger btn-sm" (click)="carrito.quitar(i)"
+                      [attr.aria-label]="'Quitar ' + item.producto.nombre">
+                <i class="bi bi-trash" aria-hidden="true"></i>
+              </button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <button class="btn btn-outline-secondary btn-sm" (click)="carrito.vaciar()">Vaciar carrito</button>
+    <p class="fs-4 mb-0">Total: <strong>{{ carrito.total() | currency:'COP':'symbol-narrow':'1.0-0' }}</strong></p>
+  </div>
+
+  <!-- 2. Datos de entrega -->
+  @if (!auth.estaLogueado()) {
+    <div class="alert alert-info">
+      Para confirmar el pedido
+      <a routerLink="/login" [queryParams]="{ volver: '/carrito' }" class="alert-link">inicia sesión</a>
+      o <a routerLink="/registro" class="alert-link">crea una cuenta</a>.
+    </div>
+  } @else {
+    <form #formulario="ngForm" (ngSubmit)="confirmar(formulario)" class="card card-body" novalidate>
+      <h2 class="h5 mb-3">Datos de entrega</h2>
+
+      <div class="row">
+        <div class="col-md-8 mb-3">
+          <label for="direccion" class="form-label">Dirección de entrega *</label>
+          <input id="direccion" name="direccion" class="form-control" required minlength="5"
+                 [(ngModel)]="direccion" #campoDireccion="ngModel"
+                 [class.is-invalid]="campoDireccion.invalid && (campoDireccion.touched || formulario.submitted)">
+          <div class="invalid-feedback">Escribe la dirección (mínimo 5 caracteres).</div>
+        </div>
+        <div class="col-md-4 mb-3">
+          <label for="telefono" class="form-label">Celular de contacto *</label>
+          <input id="telefono" name="telefono" type="tel" class="form-control" required pattern="3[0-9]{9}"
+                 [(ngModel)]="telefono" #campoTelefono="ngModel"
+                 [class.is-invalid]="campoTelefono.invalid && (campoTelefono.touched || formulario.submitted)">
+          <div class="invalid-feedback">10 dígitos, empezando por 3.</div>
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label for="nota" class="form-label">Nota de personalización (opcional)</label>
+        <textarea id="nota" name="nota" class="form-control" rows="3" maxlength="500"
+                  placeholder="Ej: iniciales en la cinta, colores que prefieres, para qué ocasión es..."
+                  [(ngModel)]="nota"></textarea>
+        <div class="form-text">{{ nota.length }}/500 caracteres · El pago y el envío se coordinan por WhatsApp.</div>
+      </div>
+
+      <button type="submit" class="btn btn-khaza btn-lg">Confirmar pedido</button>
+    </form>
+  }
+}

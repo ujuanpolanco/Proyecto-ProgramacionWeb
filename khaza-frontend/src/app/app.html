@@ -1,0 +1,73 @@
+<header>
+  <nav class="navbar navbar-expand-lg navbar-dark navbar-khaza sticky-top">
+    <div class="container">
+      <a class="navbar-brand fw-bold" routerLink="/">
+        <i class="bi bi-gem" aria-hidden="true"></i> KHAZA
+      </a>
+
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menu"
+              aria-controls="menu" aria-expanded="false" aria-label="Abrir menú">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="menu">
+        <ul class="navbar-nav me-auto">
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Catálogo</a>
+          </li>
+          @if (auth.estaLogueado() && !auth.esAdmin()) {
+            <li class="nav-item">
+              <a class="nav-link" routerLink="/mis-pedidos" routerLinkActive="active">Mis pedidos</a>
+            </li>
+          }
+          @if (auth.esAdmin()) {
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Administración
+              </a>
+              <ul class="dropdown-menu">
+                <li><a class="dropdown-item" routerLink="/admin/productos">Productos e inventario</a></li>
+                <li><a class="dropdown-item" routerLink="/admin/categorias">Categorías</a></li>
+                <li><a class="dropdown-item" routerLink="/admin/pedidos">Pedidos</a></li>
+              </ul>
+            </li>
+          }
+        </ul>
+
+        <ul class="navbar-nav align-items-lg-center gap-lg-2">
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/carrito" routerLinkActive="active">
+              <i class="bi bi-bag" aria-hidden="true"></i> Carrito
+              <span class="badge bg-light text-dark">{{ carrito.cantidadDeProductos() }}</span>
+            </a>
+          </li>
+          @if (auth.usuario) {
+            <li class="nav-item navbar-text text-white-50">Hola, {{ auth.usuario.nombre }}</li>
+            <li class="nav-item">
+              <button class="btn btn-outline-light btn-sm" (click)="cerrarSesion()">Salir</button>
+            </li>
+          } @else {
+            <li class="nav-item"><a class="nav-link" routerLink="/login">Iniciar sesión</a></li>
+            <li class="nav-item"><a class="btn btn-light btn-sm" routerLink="/registro">Crear cuenta</a></li>
+          }
+        </ul>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<main class="container py-4">
+  <router-outlet />
+</main>
+
+<footer class="footer-khaza py-4 mt-5">
+  <div class="container d-flex flex-column flex-md-row justify-content-between gap-2">
+    <span>KHAZA · Sombreros artesanales y ropa · Neiva, Colombia</span>
+    <a routerLink="/privacidad">Aviso de privacidad (Ley 1581 de 2012)</a>
+  </div>
+</footer>
+
+<!-- Botón "volver arriba": lo controla jQuery desde app.ts -->
+<button id="btn-arriba" class="btn btn-khaza rounded-circle shadow" aria-label="Volver arriba">
+  <i class="bi bi-arrow-up" aria-hidden="true"></i>
+</button>

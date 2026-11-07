@@ -1,0 +1,54 @@
+<h1 class="h2 mb-4">Categorías</h1>
+
+<!-- Formulario: crear o editar -->
+<form #formulario="ngForm" (ngSubmit)="guardar(formulario)" class="card card-body mb-4" novalidate>
+  <h2 class="h5">{{ categoria.id === 0 ? 'Nueva categoría' : 'Editar: ' + categoria.nombre }}</h2>
+  <div class="row g-3">
+    <div class="col-md-4">
+      <label for="nombre" class="form-label">Nombre *</label>
+      <input id="nombre" name="nombre" class="form-control" required maxlength="50"
+             [(ngModel)]="categoria.nombre" #campoNombre="ngModel"
+             [class.is-invalid]="campoNombre.invalid && (campoNombre.touched || formulario.submitted)">
+      <div class="invalid-feedback">El nombre es obligatorio.</div>
+    </div>
+    <div class="col-md-5">
+      <label for="descripcion" class="form-label">Descripción</label>
+      <input id="descripcion" name="descripcion" class="form-control" maxlength="255"
+             [(ngModel)]="categoria.descripcion">
+    </div>
+    <div class="col-md-3 d-flex gap-2 align-items-end">
+      <button type="submit" class="btn btn-khaza">Guardar</button>
+      @if (categoria.id !== 0) {
+        <button type="button" class="btn btn-outline-secondary" (click)="cancelar(formulario)">Cancelar</button>
+      }
+    </div>
+  </div>
+</form>
+
+<div class="table-responsive">
+  <table class="table align-middle bg-white">
+    <thead>
+      <tr>
+        <th scope="col">Nombre</th>
+        <th scope="col">Descripción</th>
+        <th scope="col">Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (c of categorias; track c.id) {
+        <tr>
+          <td>{{ c.nombre }}</td>
+          <td>{{ c.descripcion }}</td>
+          <td class="text-nowrap">
+            <button class="btn btn-outline-primary btn-sm" (click)="editar(c)" [attr.aria-label]="'Editar ' + c.nombre">
+              <i class="bi bi-pencil" aria-hidden="true"></i>
+            </button>
+            <button class="btn btn-outline-danger btn-sm ms-1" (click)="eliminar(c)" [attr.aria-label]="'Eliminar ' + c.nombre">
+              <i class="bi bi-trash" aria-hidden="true"></i>
+            </button>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>

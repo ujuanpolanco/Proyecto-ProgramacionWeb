@@ -1,0 +1,100 @@
+/* Estilos propios de KHAZA. Bootstrap ya trae casi todo; aquí solo van los colores de la marca
+   y algunos detalles que Bootstrap no tiene. Los colores salen de las fotos de los sombreros. */
+
+:root {
+  --khaza-cafe: #3b2a1e;       /* café oscuro de la palma teñida */
+  --khaza-terracota: #a8432a;  /* rojo de los hilos */
+  --khaza-crema: #f7f1e8;      /* fondo claro, como la paja */
+}
+
+body {
+  background-color: var(--khaza-crema);
+}
+
+/* Barra de navegación y pie de página */
+.navbar-khaza {
+  background-color: var(--khaza-cafe);
+}
+
+.footer-khaza {
+  background-color: var(--khaza-cafe);
+  color: #e9e1d6;
+}
+
+.footer-khaza a {
+  color: #ffffff;
+}
+
+/* Botón con el color de la marca */
+.btn-khaza {
+  background-color: var(--khaza-terracota);
+  border-color: var(--khaza-terracota);
+  color: #ffffff;
+}
+
+.btn-khaza:hover,
+.btn-khaza:focus {
+  background-color: #8a3521;
+  border-color: #8a3521;
+  color: #ffffff;
+}
+
+/* Portada del catálogo */
+.portada {
+  background: linear-gradient(rgba(59, 42, 30, 0.75), rgba(59, 42, 30, 0.75)),
+              url('/img/productos/sombrero-multicolor.jpg') center / cover;
+  color: #ffffff;
+}
+
+/* Tarjetas de producto: la foto siempre cuadrada para que todas midan igual */
+.tarjeta-producto img,
+.foto-producto {
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+}
+
+.tarjeta-producto {
+  transition: transform 0.2s;
+}
+
+.tarjeta-producto:hover {
+  transform: translateY(-4px);
+}
+
+/* Cuando un producto no tiene foto se muestra un recuadro con un ícono */
+.sin-foto {
+  aspect-ratio: 1 / 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #e9e1d6;
+  color: var(--khaza-cafe);
+  font-size: 4rem;
+}
+
+/* Miniatura en las tablas del administrador */
+.miniatura {
+  width: 48px;
+  height: 48px;
+  object-fit: cover;
+}
+
+/* Columna de cantidad en la tabla del carrito */
+.col-cantidad {
+  width: 110px;
+}
+
+/* Botón "volver arriba" (lo muestra y oculta jQuery) */
+#btn-arriba {
+  display: none;
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  width: 48px;
+  height: 48px;
+}
+
+/* Aviso "Producto agregado al carrito" (lo muestra jQuery) */
+#aviso-carrito {
+  display: none;
+}

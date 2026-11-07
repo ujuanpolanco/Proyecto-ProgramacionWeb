@@ -1,0 +1,74 @@
+<section class="portada rounded-3 p-4 p-md-5 mb-4">
+  <h1 class="display-5 fw-bold">Sombreros hechos a mano</h1>
+  <p class="lead mb-0">Cada pieza de KHAZA se teje y se decora a mano. Elige el tuyo, déjanos una nota
+    para personalizarlo y confirma tu pedido por WhatsApp.</p>
+</section>
+
+<!-- Filtros -->
+<section class="card card-body mb-4" aria-label="Buscar y filtrar productos">
+  <div class="row g-3 align-items-end">
+    <div class="col-12 col-md-5">
+      <label for="busqueda" class="form-label">Buscar</label>
+      <input id="busqueda" type="search" class="form-control" placeholder="Ej: sombrero rosa"
+             [(ngModel)]="busqueda">
+    </div>
+    <div class="col-6 col-md-3">
+      <label for="categoria" class="form-label">Categoría</label>
+      <select id="categoria" class="form-select" [(ngModel)]="categoriaId">
+        <option [ngValue]="0">Todas</option>
+        @for (categoria of categorias; track categoria.id) {
+          <option [ngValue]="categoria.id">{{ categoria.nombre }}</option>
+        }
+      </select>
+    </div>
+    <div class="col-6 col-md-2">
+      <label for="precio" class="form-label">Precio</label>
+      <select id="precio" class="form-select" [(ngModel)]="precioMaximo">
+        <option [ngValue]="0">Cualquiera</option>
+        <option [ngValue]="100000">Hasta $ 100.000</option>
+        <option [ngValue]="200000">Hasta $ 200.000</option>
+        <option [ngValue]="250000">Hasta $ 250.000</option>
+      </select>
+    </div>
+    <div class="col-12 col-md-2 d-grid">
+      <button class="btn btn-outline-secondary" (click)="limpiarFiltros()">Limpiar</button>
+    </div>
+  </div>
+</section>
+
+<!-- Productos: 1 columna en celular, 2 en tablet, 3 en computador -->
+<div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-4">
+  @for (producto of productosFiltrados(); track producto.id) {
+    <div class="col">
+      <article class="card h-100 shadow-sm tarjeta-producto">
+        @if (producto.imagen) {
+          <img [src]="producto.imagen" class="card-img-top" [alt]="producto.nombre">
+        } @else {
+          <div class="sin-foto card-img-top" role="img" [attr.aria-label]="producto.nombre + ', sin foto'">
+            <i class="bi bi-image" aria-hidden="true"></i>
+          </div>
+        }
+        <div class="card-body">
+          <p class="text-muted small mb-1">{{ producto.categoria.nombre }}</p>
+          <h2 class="h5 card-title">{{ producto.nombre }}</h2>
+          <p class="fs-5 fw-bold mb-2">{{ producto.precio | currency:'COP':'symbol-narrow':'1.0-0' }}</p>
+
+          @if (producto.bajoPedido) {
+            <span class="badge text-bg-info">Bajo pedido</span>
+          } @else if (producto.stock === 0) {
+            <span class="badge text-bg-secondary">Agotado</span>
+          } @else if (producto.stock <= 3) {
+            <span class="badge text-bg-warning">Últimas {{ producto.stock }} unidades</span>
+          }
+        </div>
+        <div class="card-footer bg-transparent border-0 pb-3">
+          <a [routerLink]="['/producto', producto.id]" class="btn btn-khaza w-100 stretched-link">Ver detalle</a>
+        </div>
+      </article>
+    </div>
+  } @empty {
+    <div class="col-12">
+      <p class="alert alert-light">No hay productos que coincidan con la búsqueda.</p>
+    </div>
+  }
+</div>

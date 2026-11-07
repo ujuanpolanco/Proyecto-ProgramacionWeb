@@ -1,0 +1,12 @@
+{
+  // Oculta en el explorador de VS Code los archivos que NO escribimos nosotros:
+  // librerías descargadas por npm, la caché de Angular y la lista de versiones.
+  // Siguen existiendo y funcionando; solo no se muestran.
+  "files.exclude": {
+    "**/node_modules": true,
+    "**/.angular": true,
+    "**/package-lock.json": true,
+    "**/dist": true,
+    "**/target": true
+  }
+}

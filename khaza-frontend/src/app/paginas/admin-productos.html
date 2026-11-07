@@ -1,0 +1,149 @@
+<h1 class="h2 mb-4">Productos e inventario</h1>
+
+<!-- Formulario: crear o editar -->
+<form #formulario="ngForm" (ngSubmit)="guardar(formulario)" class="card card-body mb-4" novalidate>
+  <h2 class="h5">{{ producto.id === 0 ? 'Nuevo producto' : 'Editar: ' + producto.nombre }}</h2>
+
+  <div class="row g-3">
+    <div class="col-md-6">
+      <label for="nombre" class="form-label">Nombre *</label>
+      <input id="nombre" name="nombre" class="form-control" required maxlength="100"
+             [(ngModel)]="producto.nombre" #campoNombre="ngModel"
+             [class.is-invalid]="campoNombre.invalid && (campoNombre.touched || formulario.submitted)">
+      <div class="invalid-feedback">El nombre es obligatorio.</div>
+    </div>
+    <div class="col-md-3">
+      <label for="categoria" class="form-label">Categoría *</label>
+      <select id="categoria" name="categoriaId" class="form-select"
+              [(ngModel)]="categoriaId" #campoCategoria="ngModel"
+              [class.is-invalid]="categoriaId === 0 && (campoCategoria.touched || formulario.submitted)">
+        <option [ngValue]="0" disabled>Elige una</option>
+        @for (categoria of categorias; track categoria.id) {
+          <option [ngValue]="categoria.id">{{ categoria.nombre }}</option>
+        }
+      </select>
+      <div class="invalid-feedback">Elige una categoría.</div>
+    </div>
+    <div class="col-md-3">
+      <label for="tallas" class="form-label">Tallas *</label>
+      <input id="tallas" name="tallas" class="form-control" required placeholder="S,M,L"
+             [(ngModel)]="producto.tallas" #campoTallas="ngModel"
+             [class.is-invalid]="campoTallas.invalid && (campoTallas.touched || formulario.submitted)">
+      <div class="form-text">Separadas por coma</div>
+    </div>
+
+    <div class="col-12">
+      <label for="descripcion" class="form-label">Descripción</label>
+      <textarea id="descripcion" name="descripcion" class="form-control" rows="2"
+                [(ngModel)]="producto.descripcion"></textarea>
+    </div>
+
+    <div class="col-6 col-md-3">
+      <label for="precio" class="form-label">Precio (COP) *</label>
+      <input id="precio" name="precio" type="number" class="form-control" required min="1000" step="1000"
+             [(ngModel)]="producto.precio" #campoPrecio="ngModel"
+             [class.is-invalid]="campoPrecio.invalid && (campoPrecio.touched || formulario.submitted)">
+      <div class="invalid-feedback">Mínimo $ 1.000.</div>
+    </div>
+    <div class="col-6 col-md-3">
+      <label for="stock" class="form-label">Stock *</label>
+      <input id="stock" name="stock" type="number" class="form-control" required min="0"
+             [(ngModel)]="producto.stock" #campoStock="ngModel"
+             [class.is-invalid]="campoStock.invalid && (campoStock.touched || formulario.submitted)">
+      <div class="invalid-feedback">No puede ser negativo.</div>
+    </div>
+    <div class="col-md-3">
+      <label for="material" class="form-label">Material</label>
+      <input id="material" name="material" class="form-control" placeholder="Palma de iraca"
+             [(ngModel)]="producto.material">
+    </div>
+    <div class="col-md-3">
+      <label for="decoracion" class="form-label">Decoración</label>
+      <input id="decoracion" name="decoracion" class="form-control" placeholder="Hilos y mostacilla"
+             [(ngModel)]="producto.decoracion">
+    </div>
+
+    <div class="col-md-6">
+      <label for="imagen" class="form-label">Ruta de la foto</label>
+      <input id="imagen" name="imagen" class="form-control" placeholder="img/productos/sombrero-rosa.jpg"
+             [(ngModel)]="producto.imagen">
+      <div class="form-text">La foto se copia en la carpeta <code>public/img/productos</code>.</div>
+    </div>
+    <div class="col-md-6 d-flex flex-column justify-content-center gap-2">
+      <div class="form-check form-switch">
+        <input id="bajoPedido" name="bajoPedido" type="checkbox" class="form-check-input" role="switch"
+               [(ngModel)]="producto.bajoPedido">
+        <label for="bajoPedido" class="form-check-label">Se fabrica bajo pedido (se vende sin stock)</label>
+      </div>
+      <div class="form-check form-switch">
+        <input id="activo" name="activo" type="checkbox" class="form-check-input" role="switch"
+               [(ngModel)]="producto.activo">
+        <label for="activo" class="form-check-label">Visible en el catálogo</label>
+      </div>
+    </div>
+  </div>
+
+  <div class="d-flex gap-2 mt-3">
+    <button type="submit" class="btn btn-khaza">Guardar</button>
+    @if (producto.id !== 0) {
+      <button type="button" class="btn btn-outline-secondary" (click)="cancelar(formulario)">Cancelar</button>
+    }
+  </div>
+</form>
+
+<!-- Inventario -->
+@if (pocoStock().length > 0) {
+  <div class="alert alert-warning">
+    <strong>Atención:</strong> {{ pocoStock().length }} producto(s) con 3 unidades o menos.
+  </div>
+}
+
+<div class="table-responsive">
+  <table class="table align-middle bg-white">
+    <thead>
+      <tr>
+        <th scope="col"><span class="visually-hidden">Foto</span></th>
+        <th scope="col">Nombre</th>
+        <th scope="col">Categoría</th>
+        <th scope="col">Precio</th>
+        <th scope="col">Stock</th>
+        <th scope="col">Visible</th>
+        <th scope="col">Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (p of productos; track p.id) {
+        <tr>
+          <td>
+            @if (p.imagen) {
+              <img [src]="p.imagen" alt="" class="miniatura rounded">
+            }
+          </td>
+          <td>{{ p.nombre }}</td>
+          <td>{{ p.categoria.nombre }}</td>
+          <td>{{ p.precio | currency:'COP':'symbol-narrow':'1.0-0' }}</td>
+          <td>
+            @if (p.bajoPedido) {
+              <span class="badge text-bg-info">Bajo pedido</span>
+            } @else if (p.stock === 0) {
+              <span class="badge text-bg-danger">0</span>
+            } @else if (p.stock <= 3) {
+              <span class="badge text-bg-warning">{{ p.stock }}</span>
+            } @else {
+              {{ p.stock }}
+            }
+          </td>
+          <td>{{ p.activo ? 'Sí' : 'No' }}</td>
+          <td class="text-nowrap">
+            <button class="btn btn-outline-primary btn-sm" (click)="editar(p)" [attr.aria-label]="'Editar ' + p.nombre">
+              <i class="bi bi-pencil" aria-hidden="true"></i>
+            </button>
+            <button class="btn btn-outline-danger btn-sm ms-1" (click)="eliminar(p)" [attr.aria-label]="'Eliminar ' + p.nombre">
+              <i class="bi bi-trash" aria-hidden="true"></i>
+            </button>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>

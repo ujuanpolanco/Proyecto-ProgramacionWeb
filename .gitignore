@@ -1,0 +1,7 @@
+# Back-end (Maven)
+khaza-backend/target/
+
+# Editores
+.idea/
+.DS_Store
+Thumbs.db
