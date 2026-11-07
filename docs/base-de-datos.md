@@ -197,12 +197,25 @@ erDiagram
 | precio_nuevo | DECIMAL(10,2) | No | | Precio después del cambio |
 | fecha | DATETIME | No | | Cuándo cambió |
 
-## 4. Triggers (se implementan en la Fase 2)
+## 4. Triggers y restricciones
+
+El script completo está en `base-datos/khaza.sql`, y las pruebas en `base-datos/pruebas.sql`.
 
 | Trigger | Cuándo se ejecuta | Qué hace |
 |---|---|---|
 | `trg_descontar_stock` | `AFTER INSERT` en `detalle_pedido` | Resta la cantidad comprada del stock del producto, salvo que sea bajo pedido |
 | `trg_auditar_precio` | `AFTER UPDATE` en `productos` | Si el precio cambió, guarda el precio anterior y el nuevo en `auditoria_precios` |
+
+| Restricción (CHECK) | Tabla | Para qué |
+|---|---|---|
+| `precio > 0` | productos | No hay productos gratis ni con precio negativo |
+| `stock >= 0` | productos | No se puede vender más de lo que hay: si el trigger dejaría el stock negativo, MySQL rechaza el pedido |
+| `estado IN ('PENDIENTE', 'ENVIADO', 'ENTREGADO')` | pedidos | Solo se aceptan esos tres estados |
+| `cantidad > 0` | detalle_pedido | No se pueden pedir 0 unidades ni cantidades negativas |
+
+**Usuario de la aplicación:** el back-end se conecta con el usuario `khaza_app`, que solo tiene
+permisos `SELECT, INSERT, UPDATE, DELETE` sobre la base `khaza` (no puede borrar tablas ni ver otras
+bases de datos).
 
 ## 5. Normalización
 

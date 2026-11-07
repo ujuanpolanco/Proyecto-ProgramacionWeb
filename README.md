@@ -11,11 +11,22 @@ personalización (confirmados por WhatsApp) y un panel de administración.
 |---|---|---|
 | Front-end | Angular, Bootstrap 5, jQuery | `khaza-frontend/` |
 | Back-end | Java + Spring Boot (Fase 3) | `khaza-backend/` |
-| Base de datos | MySQL (Fase 2) | `base-datos/` |
+| Base de datos | MySQL | `base-datos/` |
 
 - El avance por fases está en [PLAN.md](PLAN.md).
 - Lo que hay que saber para sustentar está en [GUIA_DEFENSA.md](GUIA_DEFENSA.md).
 - El modelo de datos (MER y diccionario) está en [docs/base-de-datos.md](docs/base-de-datos.md).
+
+## Cómo crear la base de datos
+
+Requisito: MySQL 8 o superior y MySQL Workbench.
+
+1. Abrir MySQL Workbench y conectarse como `root`.
+2. *File → Open SQL Script…* y elegir `base-datos/khaza.sql`.
+3. Ejecutar todo con el rayo (⚡). Al final aparece la lista de productos.
+
+Para ver los triggers funcionando, abrir `base-datos/pruebas.sql` y ejecutarlo sentencia por
+sentencia (Ctrl + Enter). Para volver a los datos iniciales, basta con ejecutar otra vez `khaza.sql`.
 
 ## Cómo correr el front-end
 
