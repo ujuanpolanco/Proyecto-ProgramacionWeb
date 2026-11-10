@@ -10,11 +10,9 @@ personalización (confirmados por WhatsApp) y un panel de administración.
 | Capa | Tecnología | Carpeta |
 |---|---|---|
 | Front-end | Angular, Bootstrap 5, jQuery | `khaza-frontend/` |
-| Back-end | Java + Spring Boot (Fase 3) | `khaza-backend/` |
+| Back-end | Java + Spring Boot, JPA, JDBC, Swagger | `khaza-backend/` |
 | Base de datos | MySQL | `base-datos/` |
 
-- El avance por fases está en [PLAN.md](PLAN.md).
-- Lo que hay que saber para sustentar está en [GUIA_DEFENSA.md](GUIA_DEFENSA.md).
 - El modelo de datos (MER y diccionario) está en [docs/base-de-datos.md](docs/base-de-datos.md).
 
 ## Cómo crear la base de datos
@@ -27,6 +25,31 @@ Requisito: MySQL 8 o superior y MySQL Workbench.
 
 Para ver los triggers funcionando, abrir `base-datos/pruebas.sql` y ejecutarlo sentencia por
 sentencia (Ctrl + Enter). Para volver a los datos iniciales, basta con ejecutar otra vez `khaza.sql`.
+
+## Cómo correr el back-end
+
+Requisito: Java 21 o superior y la base de datos ya creada (paso anterior). No hace falta instalar
+Maven: el proyecto trae Maven Wrapper (`mvnw`).
+
+```bash
+cd khaza-backend
+./mvnw spring-boot:run
+```
+
+- API: <http://localhost:8080/api/productos>
+- Documentación Swagger: <http://localhost:8080/swagger-ui.html>
+- JavaDoc: `./mvnw javadoc:javadoc` y abrir `target/reports/apidocs/index.html`
+
+| Método | Ruta | Qué hace |
+|---|---|---|
+| GET / POST | `/api/categorias` | Listar / crear categorías |
+| GET / PUT / DELETE | `/api/categorias/{id}` | Buscar / editar / eliminar una categoría |
+| GET / POST | `/api/productos` | Listar / crear productos |
+| GET / PUT / DELETE | `/api/productos/{id}` | Buscar / editar / eliminar un producto |
+| GET | `/api/pedidos?usuarioId=2` | Todos los pedidos, o solo los de un cliente |
+| POST | `/api/pedidos` | Crear un pedido |
+| PUT | `/api/pedidos/{id}/estado?estado=ENVIADO` | Cambiar el estado de un pedido |
+| GET | `/api/reportes/ventas` | Ventas por producto (consulta con JDBC) |
 
 ## Cómo correr el front-end
 
