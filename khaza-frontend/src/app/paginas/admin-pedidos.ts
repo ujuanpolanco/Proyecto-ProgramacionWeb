@@ -1,32 +1,54 @@
 import { CurrencyPipe, DatePipe } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 import { EstadoPedido, Pedido } from '../modelos';
-import { ApiService } from '../servicios/api.service';
+import { ApiService, mensajeDeError } from '../servicios/api.service';
 
 // Gestión de pedidos: el administrador ve todos y les cambia el estado.
 @Component({
   selector: 'app-admin-pedidos',
-  imports: [FormsModule, CurrencyPipe, DatePipe],
+  // Eager: Angular vuelve a revisar este componente cada vez que cambia algo (por ejemplo, cuando
+  // llega la respuesta de la API). Desde Angular 22 el valor por defecto es OnPush.
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [FormsModule, CurrencyPipe, DatePipe, TranslatePipe],
   templateUrl: './admin-pedidos.html',
 })
 export class AdminPedidos implements OnInit {
 
   pedidos: Pedido[] = [];
   estados: EstadoPedido[] = ['PENDIENTE', 'ENVIADO', 'ENTREGADO'];
+  error = '';
 
-  constructor(private api: ApiService) {}
+  constructor(private api: ApiService, private traductor: TranslateService) {}
+
+  // Formato de las fechas según el idioma: "3 nov 2026" o "Nov 3, 2026"
+  formatoFecha(): string {
+    return this.traductor.getCurrentLang() === 'en' ? 'en-US' : 'es-CO';
+  }
 
   ngOnInit(): void {
-    this.api.listarPedidos().subscribe(datos => {
-      this.pedidos = datos;
+    this.api.listarPedidos().subscribe({
+      next: datos => {
+        this.pedidos = datos;
+      },
+      error: (e: HttpErrorResponse) => {
+        this.error = mensajeDeError(e);
+      },
     });
   }
 
   cambiarEstado(pedido: Pedido, estado: EstadoPedido): void {
-    this.api.cambiarEstadoPedido(pedido.id, estado).subscribe(actualizado => {
-      pedido.estado = actualizado.estado;
+    const anterior = pedido.estado;
+    pedido.estado = estado;
+    this.error = '';
+    this.api.cambiarEstadoPedido(pedido.id, estado).subscribe({
+      error: (e: HttpErrorResponse) => {
+        pedido.estado = anterior; // si falla, el selector vuelve a como estaba
+        this.error = mensajeDeError(e);
+      },
     });
   }
 

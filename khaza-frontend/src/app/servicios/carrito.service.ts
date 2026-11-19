@@ -20,6 +20,13 @@ export class CarritoService {
     this.guardar();
   }
 
+  // Cuántas unidades de un producto hay en el carrito, sumando todas las tallas.
+  cantidadDe(productoId: number): number {
+    return this.items
+      .filter(i => i.producto.id === productoId)
+      .reduce((suma, i) => suma + i.cantidad, 0);
+  }
+
   quitar(posicion: number): void {
     this.items.splice(posicion, 1);
     this.guardar();

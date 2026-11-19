@@ -1,102 +1,111 @@
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 
-import { CATEGORIAS, PEDIDOS, PRODUCTOS } from '../datos-prueba';
-import { Categoria, EstadoPedido, Pedido, Producto } from '../modelos';
+import { Categoria, EstadoPedido, Pedido, PedidoNuevo, PedidosPorEstado, Producto, VentaProducto } from '../modelos';
 
-// Todo lo que tiene que ver con los datos de la tienda: productos, categorías y pedidos.
-//
-// Por ahora trabaja sobre las listas de datos-prueba.ts. Cada método devuelve un Observable
-// con of(...) para que en la Fase 4 solo haya que cambiar of(...) por una llamada al back-end
-// (this.http.get, post, put, delete). Las páginas no tienen que cambiar nada.
+// Dirección de la API de Spring Boot. Es relativa: el servidor de Angular (ng serve) reenvía
+// todo lo que empieza por /api al back-end en https://localhost:8443 (ver proxy.conf.json).
+// Así el navegador solo habla con https://localhost:4200.
+export const API = '/api';
+
+// Todo lo que tiene que ver con los datos de la tienda: productos, categorías, pedidos y
+// reportes. Cada método hace una petición HTTP a la API y devuelve un Observable; la página
+// que lo llama se suscribe para recibir la respuesta. El token JWT lo agrega solo el
+// interceptor (token.interceptor.ts).
 @Injectable({ providedIn: 'root' })
 export class ApiService {
+
+  constructor(private http: HttpClient) {}
 
   // ==================== PRODUCTOS ====================
 
   listarProductos(): Observable<Producto[]> {
-    return of(PRODUCTOS);
+    return this.http.get<Producto[]>(`${API}/productos`);
   }
 
-  buscarProducto(id: number): Observable<Producto | undefined> {
-    return of(PRODUCTOS.find(p => p.id === id));
+  buscarProducto(id: number): Observable<Producto> {
+    return this.http.get<Producto>(`${API}/productos/${id}`);
   }
 
   crearProducto(producto: Producto): Observable<Producto> {
-    // Se guarda una COPIA ({ ...producto }) y no el mismo objeto del formulario; si no,
-    // al limpiar el formulario también se borraría lo que quedó en la lista.
-    const nuevo = { ...producto, id: this.siguienteId(PRODUCTOS) };
-    PRODUCTOS.push(nuevo);
-    return of(nuevo);
+    return this.http.post<Producto>(`${API}/productos`, producto);
   }
 
   actualizarProducto(id: number, producto: Producto): Observable<Producto> {
-    const posicion = PRODUCTOS.findIndex(p => p.id === id);
-    PRODUCTOS[posicion] = { ...producto, id };
-    return of(PRODUCTOS[posicion]);
+    return this.http.put<Producto>(`${API}/productos/${id}`, producto);
   }
 
   eliminarProducto(id: number): Observable<void> {
-    PRODUCTOS.splice(PRODUCTOS.findIndex(p => p.id === id), 1);
-    return of(undefined);
+    return this.http.delete<void>(`${API}/productos/${id}`);
   }
 
   // ==================== CATEGORÍAS ====================
 
   listarCategorias(): Observable<Categoria[]> {
-    return of(CATEGORIAS);
+    return this.http.get<Categoria[]>(`${API}/categorias`);
   }
 
   crearCategoria(categoria: Categoria): Observable<Categoria> {
-    const nueva = { ...categoria, id: this.siguienteId(CATEGORIAS) };
-    CATEGORIAS.push(nueva);
-    return of(nueva);
+    return this.http.post<Categoria>(`${API}/categorias`, categoria);
   }
 
   actualizarCategoria(id: number, categoria: Categoria): Observable<Categoria> {
-    const posicion = CATEGORIAS.findIndex(c => c.id === id);
-    CATEGORIAS[posicion] = { ...categoria, id };
-    return of(CATEGORIAS[posicion]);
+    return this.http.put<Categoria>(`${API}/categorias/${id}`, categoria);
   }
 
   eliminarCategoria(id: number): Observable<void> {
-    CATEGORIAS.splice(CATEGORIAS.findIndex(c => c.id === id), 1);
-    return of(undefined);
+    return this.http.delete<void>(`${API}/categorias/${id}`);
   }
 
   // ==================== PEDIDOS ====================
 
-  // Para el administrador: todos, del más reciente al más antiguo.
+  // Para el administrador: todos.
   listarPedidos(): Observable<Pedido[]> {
-    return of([...PEDIDOS].reverse());
+    return this.http.get<Pedido[]>(`${API}/pedidos`);
   }
 
-  // Para el cliente: solo los suyos.
-  listarPedidosDeUsuario(usuarioId: number): Observable<Pedido[]> {
-    return of(PEDIDOS.filter(p => p.usuario.id === usuarioId).reverse());
+  // Para el cliente: los suyos (la API sabe quién es por el token).
+  misPedidos(): Observable<Pedido[]> {
+    return this.http.get<Pedido[]>(`${API}/pedidos/mios`);
   }
 
-  crearPedido(pedido: Pedido): Observable<Pedido> {
-    const nuevo = { ...pedido, id: this.siguienteId(PEDIDOS) };
-    PEDIDOS.push(nuevo);
-
-    // Simulación del trigger trg_descontar_stock. En la Fase 2 esto lo hace MySQL solo.
-    for (const detalle of nuevo.detalles) {
-      if (!detalle.producto.bajoPedido) {
-        detalle.producto.stock -= detalle.cantidad;
-      }
-    }
-    return of(nuevo);
+  crearPedido(pedido: PedidoNuevo): Observable<Pedido> {
+    return this.http.post<Pedido>(`${API}/pedidos`, pedido);
   }
 
   cambiarEstadoPedido(id: number, estado: EstadoPedido): Observable<Pedido> {
-    const pedido = PEDIDOS.find(p => p.id === id)!;
-    pedido.estado = estado;
-    return of(pedido);
+    return this.http.put<Pedido>(`${API}/pedidos/${id}/estado`, null, { params: { estado } });
   }
 
-  // El id que le toca a un registro nuevo: el mayor que haya + 1 (en MySQL lo hace AUTO_INCREMENT).
-  private siguienteId(lista: { id: number }[]): number {
-    return Math.max(0, ...lista.map(x => x.id)) + 1;
+  // ==================== REPORTES ====================
+
+  ventasPorProducto(): Observable<VentaProducto[]> {
+    return this.http.get<VentaProducto[]>(`${API}/reportes/ventas`);
   }
+
+  pedidosPorEstado(): Observable<PedidosPorEstado[]> {
+    return this.http.get<PedidosPorEstado[]>(`${API}/reportes/estados`);
+  }
+
+  // El PDF llega como archivo (Blob), no como JSON.
+  reporteVentasPdf(): Observable<Blob> {
+    return this.http.get(`${API}/reportes/ventas/pdf`, { responseType: 'blob' });
+  }
+}
+
+// Saca el mensaje de error que mandó la API para mostrarlo en la página (con el pipe translate).
+// Los mensajes del propio front son claves de traducción ('errores.sinConexion'); los que escribe
+// el back-end llegan en español y el pipe translate los deja tal cual.
+// - Errores de validación (400): vienen en una lista "errors" → se juntan.
+// - Otros errores (404, 409...): vienen en "message".
+// - Si no hay respuesta (status 0) o el proxy no encuentra el back-end (502, 504), está apagado.
+export function mensajeDeError(error: HttpErrorResponse): string {
+  if (error.status === 0 || error.status === 502 || error.status === 504) {
+    return 'errores.sinConexion';
+  }
+  if (error.error?.errors?.length) {
+    return error.error.errors.map((e: { defaultMessage: string }) => e.defaultMessage).join('. ');
+  }
+  return error.error?.message ?? 'errores.inesperado';
 }

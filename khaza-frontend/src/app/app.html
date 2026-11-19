@@ -1,3 +1,8 @@
+<!-- Accesibilidad: solo aparece al navegar con la tecla Tab -->
+<a href="#contenido" class="visually-hidden-focusable saltar-contenido" (click)="saltarAlContenido($event)">
+  {{ 'menu.saltar' | translate }}
+</a>
+
 <header>
   <nav class="navbar navbar-expand-lg navbar-dark navbar-khaza sticky-top">
     <div class="container">
@@ -6,49 +11,61 @@
       </a>
 
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menu"
-              aria-controls="menu" aria-expanded="false" aria-label="Abrir menú">
+              aria-controls="menu" aria-expanded="false" [attr.aria-label]="'menu.abrir' | translate">
         <span class="navbar-toggler-icon"></span>
       </button>
 
       <div class="collapse navbar-collapse" id="menu">
         <ul class="navbar-nav me-auto">
           <li class="nav-item">
-            <a class="nav-link" routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Catálogo</a>
+            <a class="nav-link" routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+              {{ 'menu.catalogo' | translate }}
+            </a>
           </li>
           @if (auth.estaLogueado() && !auth.esAdmin()) {
             <li class="nav-item">
-              <a class="nav-link" routerLink="/mis-pedidos" routerLinkActive="active">Mis pedidos</a>
+              <a class="nav-link" routerLink="/mis-pedidos" routerLinkActive="active">{{ 'menu.misPedidos' | translate }}</a>
             </li>
           }
           @if (auth.esAdmin()) {
             <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                Administración
+                {{ 'menu.administracion' | translate }}
               </a>
               <ul class="dropdown-menu">
-                <li><a class="dropdown-item" routerLink="/admin/productos">Productos e inventario</a></li>
-                <li><a class="dropdown-item" routerLink="/admin/categorias">Categorías</a></li>
-                <li><a class="dropdown-item" routerLink="/admin/pedidos">Pedidos</a></li>
+                <li><a class="dropdown-item" routerLink="/admin/productos">{{ 'menu.productos' | translate }}</a></li>
+                <li><a class="dropdown-item" routerLink="/admin/categorias">{{ 'menu.categorias' | translate }}</a></li>
+                <li><a class="dropdown-item" routerLink="/admin/pedidos">{{ 'menu.pedidos' | translate }}</a></li>
+                <li><a class="dropdown-item" routerLink="/admin/reportes">{{ 'menu.reportes' | translate }}</a></li>
               </ul>
             </li>
           }
         </ul>
 
         <ul class="navbar-nav align-items-lg-center gap-lg-2">
+          <!-- Selector de idioma -->
+          <li class="nav-item">
+            <div class="btn-group btn-group-sm" role="group" [attr.aria-label]="'menu.idioma' | translate">
+              <button type="button" class="btn" [class.btn-light]="idioma() === 'es'" [class.btn-outline-light]="idioma() !== 'es'"
+                      [attr.aria-pressed]="idioma() === 'es'" (click)="cambiarIdioma('es')" lang="es">ES</button>
+              <button type="button" class="btn" [class.btn-light]="idioma() === 'en'" [class.btn-outline-light]="idioma() !== 'en'"
+                      [attr.aria-pressed]="idioma() === 'en'" (click)="cambiarIdioma('en')" lang="en">EN</button>
+            </div>
+          </li>
           <li class="nav-item">
             <a class="nav-link" routerLink="/carrito" routerLinkActive="active">
-              <i class="bi bi-bag" aria-hidden="true"></i> Carrito
+              <i class="bi bi-bag" aria-hidden="true"></i> {{ 'menu.carrito' | translate }}
               <span class="badge bg-light text-dark">{{ carrito.cantidadDeProductos() }}</span>
             </a>
           </li>
           @if (auth.usuario) {
-            <li class="nav-item navbar-text text-white-50">Hola, {{ auth.usuario.nombre }}</li>
+            <li class="nav-item navbar-text text-white-50">{{ 'menu.hola' | translate }}, {{ auth.usuario.nombre }}</li>
             <li class="nav-item">
-              <button class="btn btn-outline-light btn-sm" (click)="cerrarSesion()">Salir</button>
+              <button class="btn btn-outline-light btn-sm" (click)="cerrarSesion()">{{ 'menu.salir' | translate }}</button>
             </li>
           } @else {
-            <li class="nav-item"><a class="nav-link" routerLink="/login">Iniciar sesión</a></li>
-            <li class="nav-item"><a class="btn btn-light btn-sm" routerLink="/registro">Crear cuenta</a></li>
+            <li class="nav-item"><a class="nav-link" routerLink="/login">{{ 'menu.iniciarSesion' | translate }}</a></li>
+            <li class="nav-item"><a class="btn btn-light btn-sm" routerLink="/registro">{{ 'menu.crearCuenta' | translate }}</a></li>
           }
         </ul>
       </div>
@@ -56,18 +73,19 @@
   </nav>
 </header>
 
-<main class="container py-4">
+<!-- tabindex="-1" permite que "Saltar al contenido" le pase el foco -->
+<main id="contenido" class="container py-4" tabindex="-1">
   <router-outlet />
 </main>
 
 <footer class="footer-khaza py-4 mt-5">
   <div class="container d-flex flex-column flex-md-row justify-content-between gap-2">
-    <span>KHAZA · Sombreros artesanales y ropa · Neiva, Colombia</span>
-    <a routerLink="/privacidad">Aviso de privacidad (Ley 1581 de 2012)</a>
+    <span>{{ 'pie.texto' | translate }}</span>
+    <a routerLink="/privacidad">{{ 'pie.privacidad' | translate }}</a>
   </div>
 </footer>
 
 <!-- Botón "volver arriba": lo controla jQuery desde app.ts -->
-<button id="btn-arriba" class="btn btn-khaza rounded-circle shadow" aria-label="Volver arriba">
+<button id="btn-arriba" class="btn btn-khaza rounded-circle shadow" [attr.aria-label]="'menu.arriba' | translate">
   <i class="bi bi-arrow-up" aria-hidden="true"></i>
 </button>

@@ -1,22 +1,26 @@
-<h1 class="h2 mb-4">Pedidos</h1>
+<h1 class="h2 mb-4">{{ 'admin.pedidos.titulo' | translate }}</h1>
+
+@if (error) {
+  <div class="alert alert-danger" role="alert">{{ error | translate }}</div>
+}
 
 <!-- Resumen rápido -->
 <div class="row g-3 mb-4">
   <div class="col-6 col-md-4">
     <div class="card card-body">
-      <p class="text-muted small mb-1">Pedidos</p>
+      <p class="text-muted small mb-1">{{ 'admin.pedidos.cantidad' | translate }}</p>
       <p class="fs-3 fw-bold mb-0">{{ pedidos.length }}</p>
     </div>
   </div>
   <div class="col-6 col-md-4">
     <div class="card card-body">
-      <p class="text-muted small mb-1">Pendientes</p>
+      <p class="text-muted small mb-1">{{ 'admin.pedidos.pendientes' | translate }}</p>
       <p class="fs-3 fw-bold mb-0">{{ pendientes() }}</p>
     </div>
   </div>
   <div class="col-12 col-md-4">
     <div class="card card-body">
-      <p class="text-muted small mb-1">Total vendido</p>
+      <p class="text-muted small mb-1">{{ 'admin.pedidos.totalVendido' | translate }}</p>
       <p class="fs-3 fw-bold mb-0">{{ totalVendido() | currency:'COP':'symbol-narrow':'1.0-0' }}</p>
     </div>
   </div>
@@ -27,18 +31,18 @@
     <thead>
       <tr>
         <th scope="col">#</th>
-        <th scope="col">Fecha</th>
-        <th scope="col">Cliente</th>
-        <th scope="col">Productos</th>
-        <th scope="col">Total</th>
-        <th scope="col">Estado</th>
+        <th scope="col">{{ 'admin.pedidos.fecha' | translate }}</th>
+        <th scope="col">{{ 'admin.pedidos.cliente' | translate }}</th>
+        <th scope="col">{{ 'admin.pedidos.productos' | translate }}</th>
+        <th scope="col">{{ 'comun.total' | translate }}</th>
+        <th scope="col">{{ 'admin.pedidos.estado' | translate }}</th>
       </tr>
     </thead>
     <tbody>
       @for (pedido of pedidos; track pedido.id) {
         <tr>
           <td>{{ pedido.id }}</td>
-          <td class="text-nowrap">{{ pedido.fecha | date:'short' }}</td>
+          <td class="text-nowrap">{{ pedido.fecha | date:'short':undefined:formatoFecha() }}</td>
           <td>
             {{ pedido.usuario.nombre }}<br>
             <span class="small text-muted">{{ pedido.telefono }}</span>
@@ -50,20 +54,21 @@
             @if (pedido.nota) {
               <div class="small text-muted"><i class="bi bi-chat-left-text" aria-hidden="true"></i> {{ pedido.nota }}</div>
             }
+            <div class="small text-muted">{{ pedido.direccion }}</div>
           </td>
           <td class="text-nowrap">{{ pedido.total | currency:'COP':'symbol-narrow':'1.0-0' }}</td>
           <td>
             <select class="form-select form-select-sm" [ngModel]="pedido.estado"
                     (ngModelChange)="cambiarEstado(pedido, $event)"
-                    [attr.aria-label]="'Estado del pedido ' + pedido.id">
+                    [attr.aria-label]="('admin.pedidos.estadoDe' | translate) + ' ' + pedido.id">
               @for (estado of estados; track estado) {
-                <option [value]="estado">{{ estado }}</option>
+                <option [value]="estado">{{ 'estado.' + estado | translate }}</option>
               }
             </select>
           </td>
         </tr>
       } @empty {
-        <tr><td colspan="6" class="text-center text-muted">Todavía no hay pedidos.</td></tr>
+        <tr><td colspan="6" class="text-center text-muted">{{ 'admin.pedidos.vacio' | translate }}</td></tr>
       }
     </tbody>
   </table>

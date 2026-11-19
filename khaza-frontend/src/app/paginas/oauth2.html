@@ -1,0 +1,7 @@
+@if (error) {
+  <div class="alert alert-danger" role="alert">
+    {{ 'oauth2.error' | translate }} <a routerLink="/login" class="alert-link">{{ 'menu.iniciarSesion' | translate }}</a>
+  </div>
+} @else {
+  <p class="text-muted" role="status">{{ 'oauth2.procesando' | translate }}</p>
+}

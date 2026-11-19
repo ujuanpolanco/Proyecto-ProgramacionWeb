@@ -1,21 +1,28 @@
 import { CurrencyPipe } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
+import { TranslatePipe } from '@ngx-translate/core';
 
 import { Categoria, Producto } from '../modelos';
-import { ApiService } from '../servicios/api.service';
+import { ApiService, mensajeDeError } from '../servicios/api.service';
 
 // Página de inicio: muestra los productos y deja buscarlos y filtrarlos.
 @Component({
   selector: 'app-catalogo',
-  imports: [FormsModule, RouterLink, CurrencyPipe],
+  // Eager: Angular vuelve a revisar este componente cada vez que cambia algo (por ejemplo, cuando
+  // llega la respuesta de la API). Desde Angular 22 el valor por defecto es OnPush.
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [FormsModule, RouterLink, CurrencyPipe, TranslatePipe],
   templateUrl: './catalogo.html',
 })
 export class Catalogo implements OnInit {
 
   productos: Producto[] = [];
   categorias: Categoria[] = [];
+  cargando = true;
+  error = '';
 
   // Valores de los filtros (unidos a los campos del HTML con [(ngModel)])
   busqueda = '';
@@ -26,8 +33,15 @@ export class Catalogo implements OnInit {
 
   // Se ejecuta una vez, cuando se abre la página.
   ngOnInit(): void {
-    this.api.listarProductos().subscribe(datos => {
-      this.productos = datos.filter(p => p.activo);
+    this.api.listarProductos().subscribe({
+      next: datos => {
+        this.productos = datos.filter(p => p.activo);
+        this.cargando = false;
+      },
+      error: (e: HttpErrorResponse) => {
+        this.error = mensajeDeError(e);
+        this.cargando = false;
+      },
     });
     this.api.listarCategorias().subscribe(datos => {
       this.categorias = datos;

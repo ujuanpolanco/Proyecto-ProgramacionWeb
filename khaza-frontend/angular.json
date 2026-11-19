@@ -78,7 +78,11 @@
               "buildTarget": "khaza-frontend:build:development"
             }
           },
-          "defaultConfiguration": "development"
+          "defaultConfiguration": "development",
+          "options": {
+            "ssl": true,
+            "proxyConfig": "proxy.conf.json"
+          }
         }
       }
     }

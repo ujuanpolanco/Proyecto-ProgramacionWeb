@@ -1,25 +1,42 @@
-<h1 class="h2 mb-4">Categorías</h1>
+<h1 class="h2 mb-4">{{ 'admin.categorias.titulo' | translate }}</h1>
+
+@if (error) {
+  <div class="alert alert-danger" role="alert">{{ error | translate }}</div>
+}
+@if (mensaje) {
+  <div class="alert alert-success alert-dismissible" role="status">
+    {{ mensaje }}
+    <button type="button" class="btn-close" (click)="mensaje = ''" [attr.aria-label]="'comun.cerrar' | translate"></button>
+  </div>
+}
 
 <!-- Formulario: crear o editar -->
 <form #formulario="ngForm" (ngSubmit)="guardar(formulario)" class="card card-body mb-4" novalidate>
-  <h2 class="h5">{{ categoria.id === 0 ? 'Nueva categoría' : 'Editar: ' + categoria.nombre }}</h2>
+  <h2 class="h5">
+    @if (categoria.id === 0) {
+      {{ 'admin.categorias.nueva' | translate }}
+    } @else {
+      {{ 'comun.editar' | translate }}: {{ categoria.nombre }}
+    }
+  </h2>
   <div class="row g-3">
     <div class="col-md-4">
-      <label for="nombre" class="form-label">Nombre *</label>
+      <label for="nombre" class="form-label">{{ 'comun.nombre' | translate }} *</label>
       <input id="nombre" name="nombre" class="form-control" required maxlength="50"
              [(ngModel)]="categoria.nombre" #campoNombre="ngModel"
-             [class.is-invalid]="campoNombre.invalid && (campoNombre.touched || formulario.submitted)">
-      <div class="invalid-feedback">El nombre es obligatorio.</div>
+             [class.is-invalid]="campoNombre.invalid && (campoNombre.touched || formulario.submitted)"
+                 [attr.aria-invalid]="campoNombre.invalid && (campoNombre.touched || formulario.submitted)" aria-describedby="nombre-error">
+      <div id="nombre-error" class="invalid-feedback">{{ 'admin.nombreError' | translate }}</div>
     </div>
     <div class="col-md-5">
-      <label for="descripcion" class="form-label">Descripción</label>
+      <label for="descripcion" class="form-label">{{ 'comun.descripcion' | translate }}</label>
       <input id="descripcion" name="descripcion" class="form-control" maxlength="255"
              [(ngModel)]="categoria.descripcion">
     </div>
     <div class="col-md-3 d-flex gap-2 align-items-end">
-      <button type="submit" class="btn btn-khaza">Guardar</button>
+      <button type="submit" class="btn btn-khaza">{{ 'comun.guardar' | translate }}</button>
       @if (categoria.id !== 0) {
-        <button type="button" class="btn btn-outline-secondary" (click)="cancelar(formulario)">Cancelar</button>
+        <button type="button" class="btn btn-outline-secondary" (click)="cancelar(formulario)">{{ 'comun.cancelar' | translate }}</button>
       }
     </div>
   </div>
@@ -29,9 +46,9 @@
   <table class="table align-middle bg-white">
     <thead>
       <tr>
-        <th scope="col">Nombre</th>
-        <th scope="col">Descripción</th>
-        <th scope="col">Acciones</th>
+        <th scope="col">{{ 'comun.nombre' | translate }}</th>
+        <th scope="col">{{ 'comun.descripcion' | translate }}</th>
+        <th scope="col">{{ 'comun.acciones' | translate }}</th>
       </tr>
     </thead>
     <tbody>
@@ -40,10 +57,12 @@
           <td>{{ c.nombre }}</td>
           <td>{{ c.descripcion }}</td>
           <td class="text-nowrap">
-            <button class="btn btn-outline-primary btn-sm" (click)="editar(c)" [attr.aria-label]="'Editar ' + c.nombre">
+            <button class="btn btn-outline-primary btn-sm" (click)="editar(c)"
+                    [attr.aria-label]="('comun.editar' | translate) + ': ' + c.nombre">
               <i class="bi bi-pencil" aria-hidden="true"></i>
             </button>
-            <button class="btn btn-outline-danger btn-sm ms-1" (click)="eliminar(c)" [attr.aria-label]="'Eliminar ' + c.nombre">
+            <button class="btn btn-outline-danger btn-sm ms-1" (click)="eliminar(c)"
+                    [attr.aria-label]="('comun.eliminar' | translate) + ': ' + c.nombre">
               <i class="bi bi-trash" aria-hidden="true"></i>
             </button>
           </td>

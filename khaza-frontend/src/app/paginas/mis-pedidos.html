@@ -1,27 +1,36 @@
-<h1 class="h2 mb-4">Mis pedidos</h1>
+<h1 class="h2 mb-4">{{ 'misPedidos.titulo' | translate }}</h1>
+
+@if (error) {
+  <div class="alert alert-danger" role="alert">{{ error | translate }}</div>
+}
+@if (cargando) {
+  <p class="text-muted" role="status">{{ 'comun.cargando' | translate }}</p>
+}
 
 @for (pedido of pedidos; track pedido.id) {
   <article class="card mb-3">
     <div class="card-header d-flex flex-wrap justify-content-between gap-2">
-      <span><strong>Pedido #{{ pedido.id }}</strong> · {{ pedido.fecha | date:'d MMM y' }}</span>
-      <span class="badge {{ colorEstado(pedido.estado) }}">{{ pedido.estado }}</span>
+      <span><strong>{{ 'misPedidos.pedido' | translate }} #{{ pedido.id }}</strong> · {{ pedido.fecha | date:'mediumDate':undefined:formatoFecha() }}</span>
+      <span class="badge {{ colorEstado(pedido.estado) }}">{{ 'estado.' + pedido.estado | translate }}</span>
     </div>
     <div class="card-body">
       <ul class="mb-2">
         @for (detalle of pedido.detalles; track $index) {
-          <li>{{ detalle.cantidad }} × {{ detalle.producto.nombre }} (talla {{ detalle.talla }}) —
+          <li>{{ detalle.cantidad }} × {{ detalle.producto.nombre }} ({{ 'comun.talla' | translate }} {{ detalle.talla }}) —
             {{ detalle.precioUnitario * detalle.cantidad | currency:'COP':'symbol-narrow':'1.0-0' }}</li>
         }
       </ul>
       @if (pedido.nota) {
-        <p class="small mb-2"><strong>Personalización:</strong> {{ pedido.nota }}</p>
+        <p class="small mb-2"><strong>{{ 'misPedidos.personalizacion' | translate }}:</strong> {{ pedido.nota }}</p>
       }
-      <p class="small text-muted mb-1">Entrega: {{ pedido.direccion }}</p>
-      <p class="fw-bold mb-0">Total: {{ pedido.total | currency:'COP':'symbol-narrow':'1.0-0' }}</p>
+      <p class="small text-muted mb-1">{{ 'misPedidos.entrega' | translate }}: {{ pedido.direccion }}</p>
+      <p class="fw-bold mb-0">{{ 'comun.total' | translate }}: {{ pedido.total | currency:'COP':'symbol-narrow':'1.0-0' }}</p>
     </div>
   </article>
 } @empty {
-  <div class="alert alert-light">
-    Todavía no has hecho pedidos. <a routerLink="/" class="alert-link">Ir al catálogo</a>
-  </div>
+  @if (!cargando && !error) {
+    <div class="alert alert-light">
+      {{ 'misPedidos.vacio' | translate }} <a routerLink="/" class="alert-link">{{ 'carrito.irCatalogo' | translate }}</a>
+    </div>
+  }
 }

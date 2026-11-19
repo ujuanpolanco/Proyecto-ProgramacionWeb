@@ -1,12 +1,14 @@
-<a routerLink="/" class="btn btn-link px-0 mb-3"><i class="bi bi-arrow-left" aria-hidden="true"></i> Volver al catálogo</a>
+<a routerLink="/" class="btn btn-link px-0 mb-3"><i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'comun.volverCatalogo' | translate }}</a>
 
-@if (producto) {
+@if (cargando) {
+  <p class="text-muted" role="status">{{ 'comun.cargando' | translate }}</p>
+} @else if (producto) {
   <div class="row g-4">
     <div class="col-md-6">
       @if (producto.imagen) {
         <img [src]="producto.imagen" class="img-fluid rounded-3 shadow-sm w-100 foto-producto" [alt]="producto.nombre">
       } @else {
-        <div class="sin-foto rounded-3" role="img" [attr.aria-label]="producto.nombre + ', sin foto'">
+        <div class="sin-foto rounded-3" role="img" [attr.aria-label]="producto.nombre + ' (' + ('comun.sinFoto' | translate) + ')'">
           <i class="bi bi-image" aria-hidden="true"></i>
         </div>
       }
@@ -19,18 +21,18 @@
       <p>{{ producto.descripcion }}</p>
 
       <dl class="row small">
-        <dt class="col-4">Material</dt>
+        <dt class="col-4">{{ 'detalle.material' | translate }}</dt>
         <dd class="col-8">{{ producto.material }}</dd>
-        <dt class="col-4">Decoración</dt>
+        <dt class="col-4">{{ 'detalle.decoracion' | translate }}</dt>
         <dd class="col-8">{{ producto.decoracion }}</dd>
-        <dt class="col-4">Disponibilidad</dt>
+        <dt class="col-4">{{ 'detalle.disponibilidad' | translate }}</dt>
         <dd class="col-8">
           @if (producto.bajoPedido) {
-            Bajo pedido: se fabrica cuando lo pides
+            {{ 'detalle.dispBajoPedido' | translate }}
           } @else if (producto.stock > 0) {
-            {{ producto.stock }} en inventario
+            {{ 'detalle.enInventario' | translate: { cantidad: producto.stock } }}
           } @else {
-            Agotado
+            {{ 'comun.agotado' | translate }}
           }
         </dd>
       </dl>
@@ -38,7 +40,7 @@
       @if (disponible()) {
         <form class="row g-3" (ngSubmit)="agregarAlCarrito()">
           <div class="col-6">
-            <label for="talla" class="form-label">Talla</label>
+            <label for="talla" class="form-label">{{ 'comun.talla' | translate }}</label>
             <select id="talla" name="talla" class="form-select" [(ngModel)]="tallaElegida">
               @for (talla of tallas; track talla) {
                 <option [value]="talla">{{ talla }}</option>
@@ -46,29 +48,32 @@
             </select>
           </div>
           <div class="col-6">
-            <label for="cantidad" class="form-label">Cantidad</label>
+            <label for="cantidad" class="form-label">{{ 'comun.cantidad' | translate }}</label>
             <input id="cantidad" name="cantidad" type="number" class="form-control"
-                   min="1" [max]="maximo()" [(ngModel)]="cantidad">
+                   min="1" step="1" [max]="maximo()" [(ngModel)]="cantidad">
           </div>
-          @if (cantidad < 1 || cantidad > maximo()) {
-            <p class="col-12 text-danger small mb-0">La cantidad debe estar entre 1 y {{ maximo() }}.</p>
+          @if (!cantidadValida()) {
+            <p class="col-12 text-danger small mb-0" role="alert">{{ 'detalle.cantidadRango' | translate: { maximo: maximo() } }}</p>
+          }
+          @if (superaStock) {
+            <p class="col-12 text-danger small mb-0" role="alert">{{ 'detalle.superaStock' | translate: superaStock }}</p>
           }
           <div class="col-12 d-grid">
             <button type="submit" class="btn btn-khaza btn-lg">
-              <i class="bi bi-bag-plus" aria-hidden="true"></i> Agregar al carrito
+              <i class="bi bi-bag-plus" aria-hidden="true"></i> {{ 'detalle.agregar' | translate }}
             </button>
           </div>
         </form>
       } @else {
-        <p class="alert alert-secondary">Este producto está agotado por ahora.</p>
+        <p class="alert alert-secondary">{{ 'detalle.agotadoAviso' | translate }}</p>
       }
 
       <!-- Lo muestra jQuery al agregar al carrito -->
       <div id="aviso-carrito" class="alert alert-success mt-3" role="status">
-        Producto agregado al carrito. <a routerLink="/carrito" class="alert-link">Ver carrito</a>
+        {{ 'detalle.agregado' | translate }} <a routerLink="/carrito" class="alert-link">{{ 'detalle.verCarrito' | translate }}</a>
       </div>
     </div>
   </div>
 } @else {
-  <p class="alert alert-warning">No encontramos ese producto.</p>
+  <p class="alert alert-warning">{{ 'detalle.noEncontrado' | translate }}</p>
 }

@@ -11,6 +11,34 @@ body {
   background-color: var(--khaza-crema);
 }
 
+/* Color de los enlaces: el azul de Bootstrap no tiene suficiente contraste sobre el fondo crema
+   (accesibilidad: mínimo 4,5 a 1). Este café rojizo tiene más de 7 a 1. */
+:root {
+  --bs-link-color: #8a3521;
+  --bs-link-color-rgb: 138, 53, 33;
+  --bs-link-hover-color: #6b2817;
+  --bs-link-hover-color-rgb: 107, 40, 23;
+}
+
+/* Accesibilidad: enlace "Saltar al contenido" (solo se ve al llegar con la tecla Tab) */
+.saltar-contenido {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  z-index: 2000;
+  padding: 8px 16px;
+  background-color: #ffffff;
+  color: var(--khaza-cafe);
+  font-weight: bold;
+}
+
+/* Que siempre se vea dónde está el foco del teclado */
+a:focus-visible,
+button:focus-visible {
+  outline: 3px solid var(--khaza-terracota);
+  outline-offset: 2px;
+}
+
 /* Barra de navegación y pie de página */
 .navbar-khaza {
   background-color: var(--khaza-cafe);

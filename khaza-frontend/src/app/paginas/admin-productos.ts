@@ -1,9 +1,11 @@
 import { CurrencyPipe } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 import { Categoria, Producto } from '../modelos';
-import { ApiService } from '../servicios/api.service';
+import { ApiService, mensajeDeError } from '../servicios/api.service';
 
 // CRUD de productos y control de inventario, en una sola página:
 //   - Arriba, un formulario que sirve para crear y para editar.
@@ -11,7 +13,10 @@ import { ApiService } from '../servicios/api.service';
 // Funciona igual que la página de categorías.
 @Component({
   selector: 'app-admin-productos',
-  imports: [FormsModule, CurrencyPipe],
+  // Eager: Angular vuelve a revisar este componente cada vez que cambia algo (por ejemplo, cuando
+  // llega la respuesta de la API). Desde Angular 22 el valor por defecto es OnPush.
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [FormsModule, CurrencyPipe, TranslatePipe],
   templateUrl: './admin-productos.html',
 })
 export class AdminProductos implements OnInit {
@@ -21,8 +26,10 @@ export class AdminProductos implements OnInit {
 
   producto: Producto = this.nuevo(); // el que está en el formulario
   categoriaId = 0;                   // categoría elegida en el formulario
+  error = '';
+  mensaje = '';
 
-  constructor(private api: ApiService) {}
+  constructor(private api: ApiService, private traductor: TranslateService) {}
 
   ngOnInit(): void {
     this.cargar();
@@ -32,8 +39,13 @@ export class AdminProductos implements OnInit {
   }
 
   cargar(): void {
-    this.api.listarProductos().subscribe(datos => {
-      this.productos = datos;
+    this.api.listarProductos().subscribe({
+      next: datos => {
+        this.productos = datos;
+      },
+      error: (e: HttpErrorResponse) => {
+        this.error = mensajeDeError(e);
+      },
     });
   }
 
@@ -56,6 +68,7 @@ export class AdminProductos implements OnInit {
   editar(producto: Producto): void {
     this.producto = { ...producto };
     this.categoriaId = producto.categoria.id;
+    this.error = '';
     window.scrollTo(0, 0);
   }
 
@@ -72,20 +85,39 @@ export class AdminProductos implements OnInit {
       return;
     }
     this.producto.categoria = this.categorias.find(c => c.id === this.categoriaId)!;
+    this.error = '';
 
     const peticion = this.producto.id === 0
       ? this.api.crearProducto(this.producto)
       : this.api.actualizarProducto(this.producto.id, this.producto);
 
-    peticion.subscribe(() => {
-      this.cancelar(formulario);
-      this.cargar();
+    peticion.subscribe({
+      next: guardado => {
+        this.mensaje = this.traductor.instant('admin.guardado', { nombre: guardado.nombre });
+        this.cancelar(formulario);
+        this.cargar();
+      },
+      error: (e: HttpErrorResponse) => {
+        this.error = mensajeDeError(e);
+      },
     });
   }
 
   eliminar(producto: Producto): void {
-    if (confirm(`¿Eliminar "${producto.nombre}"?`)) {
-      this.api.eliminarProducto(producto.id).subscribe(() => this.cargar());
+    if (!confirm(this.traductor.instant('admin.confirmarEliminar', { nombre: producto.nombre }))) {
+      return;
     }
+    this.error = '';
+    this.api.eliminarProducto(producto.id).subscribe({
+      next: () => {
+        this.mensaje = this.traductor.instant('admin.eliminado', { nombre: producto.nombre });
+        this.cargar();
+      },
+      // 409 si ya se vendió: la API pide ocultarlo en vez de borrarlo
+      error: (e: HttpErrorResponse) => {
+        this.error = mensajeDeError(e);
+        window.scrollTo(0, 0);
+      },
+    });
   }
 }

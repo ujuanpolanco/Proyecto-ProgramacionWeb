@@ -1,92 +1,114 @@
-<h1 class="h2 mb-4">Productos e inventario</h1>
+<h1 class="h2 mb-4">{{ 'admin.productos.titulo' | translate }}</h1>
+
+@if (error) {
+  <div class="alert alert-danger" role="alert">{{ error | translate }}</div>
+}
+@if (mensaje) {
+  <div class="alert alert-success alert-dismissible" role="status">
+    {{ mensaje }}
+    <button type="button" class="btn-close" (click)="mensaje = ''" [attr.aria-label]="'comun.cerrar' | translate"></button>
+  </div>
+}
 
 <!-- Formulario: crear o editar -->
 <form #formulario="ngForm" (ngSubmit)="guardar(formulario)" class="card card-body mb-4" novalidate>
-  <h2 class="h5">{{ producto.id === 0 ? 'Nuevo producto' : 'Editar: ' + producto.nombre }}</h2>
+  <h2 class="h5">
+    @if (producto.id === 0) {
+      {{ 'admin.productos.nuevo' | translate }}
+    } @else {
+      {{ 'comun.editar' | translate }}: {{ producto.nombre }}
+    }
+  </h2>
 
   <div class="row g-3">
     <div class="col-md-6">
-      <label for="nombre" class="form-label">Nombre *</label>
+      <label for="nombre" class="form-label">{{ 'comun.nombre' | translate }} *</label>
       <input id="nombre" name="nombre" class="form-control" required maxlength="100"
              [(ngModel)]="producto.nombre" #campoNombre="ngModel"
-             [class.is-invalid]="campoNombre.invalid && (campoNombre.touched || formulario.submitted)">
-      <div class="invalid-feedback">El nombre es obligatorio.</div>
+             [class.is-invalid]="campoNombre.invalid && (campoNombre.touched || formulario.submitted)"
+                 [attr.aria-invalid]="campoNombre.invalid && (campoNombre.touched || formulario.submitted)" aria-describedby="nombre-error">
+      <div id="nombre-error" class="invalid-feedback">{{ 'admin.nombreError' | translate }}</div>
     </div>
     <div class="col-md-3">
-      <label for="categoria" class="form-label">Categoría *</label>
+      <label for="categoria" class="form-label">{{ 'comun.categoria' | translate }} *</label>
       <select id="categoria" name="categoriaId" class="form-select"
               [(ngModel)]="categoriaId" #campoCategoria="ngModel"
-              [class.is-invalid]="categoriaId === 0 && (campoCategoria.touched || formulario.submitted)">
-        <option [ngValue]="0" disabled>Elige una</option>
+              [class.is-invalid]="categoriaId === 0 && (campoCategoria.touched || formulario.submitted)"
+                 [attr.aria-invalid]="categoriaId === 0 && (campoCategoria.touched || formulario.submitted)" aria-describedby="categoria-error">
+        <option [ngValue]="0" disabled>{{ 'admin.productos.eligeCategoria' | translate }}</option>
         @for (categoria of categorias; track categoria.id) {
           <option [ngValue]="categoria.id">{{ categoria.nombre }}</option>
         }
       </select>
-      <div class="invalid-feedback">Elige una categoría.</div>
+      <div id="categoria-error" class="invalid-feedback">{{ 'admin.productos.eligeCategoria' | translate }}</div>
     </div>
     <div class="col-md-3">
-      <label for="tallas" class="form-label">Tallas *</label>
-      <input id="tallas" name="tallas" class="form-control" required placeholder="S,M,L"
+      <label for="tallas" class="form-label">{{ 'admin.productos.tallas' | translate }} *</label>
+      <input id="tallas" name="tallas" class="form-control" required maxlength="50" placeholder="S,M,L"
              [(ngModel)]="producto.tallas" #campoTallas="ngModel"
-             [class.is-invalid]="campoTallas.invalid && (campoTallas.touched || formulario.submitted)">
-      <div class="form-text">Separadas por coma</div>
+             [class.is-invalid]="campoTallas.invalid && (campoTallas.touched || formulario.submitted)"
+                 [attr.aria-invalid]="campoTallas.invalid && (campoTallas.touched || formulario.submitted)" aria-describedby="tallas-error">
+      <div id="tallas-error" class="invalid-feedback">{{ 'admin.productos.tallasError' | translate }}</div>
+      <div class="form-text">{{ 'admin.productos.tallasAyuda' | translate }}</div>
     </div>
 
     <div class="col-12">
-      <label for="descripcion" class="form-label">Descripción</label>
+      <label for="descripcion" class="form-label">{{ 'comun.descripcion' | translate }}</label>
       <textarea id="descripcion" name="descripcion" class="form-control" rows="2"
                 [(ngModel)]="producto.descripcion"></textarea>
     </div>
 
     <div class="col-6 col-md-3">
-      <label for="precio" class="form-label">Precio (COP) *</label>
-      <input id="precio" name="precio" type="number" class="form-control" required min="1000" step="1000"
+      <label for="precio" class="form-label">{{ 'comun.precio' | translate }} (COP) *</label>
+      <input id="precio" name="precio" type="number" class="form-control" required min="1000" max="99999999" step="1000"
              [(ngModel)]="producto.precio" #campoPrecio="ngModel"
-             [class.is-invalid]="campoPrecio.invalid && (campoPrecio.touched || formulario.submitted)">
-      <div class="invalid-feedback">Mínimo $ 1.000.</div>
+             [class.is-invalid]="campoPrecio.invalid && (campoPrecio.touched || formulario.submitted)"
+                 [attr.aria-invalid]="campoPrecio.invalid && (campoPrecio.touched || formulario.submitted)" aria-describedby="precio-error">
+      <div id="precio-error" class="invalid-feedback">{{ 'admin.productos.precioError' | translate }}</div>
     </div>
     <div class="col-6 col-md-3">
-      <label for="stock" class="form-label">Stock *</label>
+      <label for="stock" class="form-label">{{ 'admin.productos.stock' | translate }} *</label>
       <input id="stock" name="stock" type="number" class="form-control" required min="0"
              [(ngModel)]="producto.stock" #campoStock="ngModel"
-             [class.is-invalid]="campoStock.invalid && (campoStock.touched || formulario.submitted)">
-      <div class="invalid-feedback">No puede ser negativo.</div>
+             [class.is-invalid]="campoStock.invalid && (campoStock.touched || formulario.submitted)"
+                 [attr.aria-invalid]="campoStock.invalid && (campoStock.touched || formulario.submitted)" aria-describedby="stock-error">
+      <div id="stock-error" class="invalid-feedback">{{ 'admin.productos.stockError' | translate }}</div>
     </div>
     <div class="col-md-3">
-      <label for="material" class="form-label">Material</label>
-      <input id="material" name="material" class="form-control" placeholder="Palma de iraca"
+      <label for="material" class="form-label">{{ 'detalle.material' | translate }}</label>
+      <input id="material" name="material" class="form-control" maxlength="50" [placeholder]="'admin.productos.materialEjemplo' | translate"
              [(ngModel)]="producto.material">
     </div>
     <div class="col-md-3">
-      <label for="decoracion" class="form-label">Decoración</label>
-      <input id="decoracion" name="decoracion" class="form-control" placeholder="Hilos y mostacilla"
+      <label for="decoracion" class="form-label">{{ 'detalle.decoracion' | translate }}</label>
+      <input id="decoracion" name="decoracion" class="form-control" maxlength="100" [placeholder]="'admin.productos.decoracionEjemplo' | translate"
              [(ngModel)]="producto.decoracion">
     </div>
 
     <div class="col-md-6">
-      <label for="imagen" class="form-label">Ruta de la foto</label>
-      <input id="imagen" name="imagen" class="form-control" placeholder="img/productos/sombrero-rosa.jpg"
+      <label for="imagen" class="form-label">{{ 'admin.productos.imagen' | translate }}</label>
+      <input id="imagen" name="imagen" class="form-control" maxlength="255" placeholder="img/productos/sombrero-rosa.jpg"
              [(ngModel)]="producto.imagen">
-      <div class="form-text">La foto se copia en la carpeta <code>public/img/productos</code>.</div>
+      <div class="form-text">{{ 'admin.productos.imagenAyuda' | translate }} <code>public/img/productos</code>.</div>
     </div>
     <div class="col-md-6 d-flex flex-column justify-content-center gap-2">
       <div class="form-check form-switch">
         <input id="bajoPedido" name="bajoPedido" type="checkbox" class="form-check-input" role="switch"
                [(ngModel)]="producto.bajoPedido">
-        <label for="bajoPedido" class="form-check-label">Se fabrica bajo pedido (se vende sin stock)</label>
+        <label for="bajoPedido" class="form-check-label">{{ 'admin.productos.bajoPedido' | translate }}</label>
       </div>
       <div class="form-check form-switch">
         <input id="activo" name="activo" type="checkbox" class="form-check-input" role="switch"
                [(ngModel)]="producto.activo">
-        <label for="activo" class="form-check-label">Visible en el catálogo</label>
+        <label for="activo" class="form-check-label">{{ 'admin.productos.visible' | translate }}</label>
       </div>
     </div>
   </div>
 
   <div class="d-flex gap-2 mt-3">
-    <button type="submit" class="btn btn-khaza">Guardar</button>
+    <button type="submit" class="btn btn-khaza">{{ 'comun.guardar' | translate }}</button>
     @if (producto.id !== 0) {
-      <button type="button" class="btn btn-outline-secondary" (click)="cancelar(formulario)">Cancelar</button>
+      <button type="button" class="btn btn-outline-secondary" (click)="cancelar(formulario)">{{ 'comun.cancelar' | translate }}</button>
     }
   </div>
 </form>
@@ -94,7 +116,7 @@
 <!-- Inventario -->
 @if (pocoStock().length > 0) {
   <div class="alert alert-warning">
-    <strong>Atención:</strong> {{ pocoStock().length }} producto(s) con 3 unidades o menos.
+    {{ 'admin.productos.alertaStock' | translate: { cantidad: pocoStock().length } }}
   </div>
 }
 
@@ -102,13 +124,13 @@
   <table class="table align-middle bg-white">
     <thead>
       <tr>
-        <th scope="col"><span class="visually-hidden">Foto</span></th>
-        <th scope="col">Nombre</th>
-        <th scope="col">Categoría</th>
-        <th scope="col">Precio</th>
-        <th scope="col">Stock</th>
-        <th scope="col">Visible</th>
-        <th scope="col">Acciones</th>
+        <th scope="col"><span class="visually-hidden">{{ 'comun.foto' | translate }}</span></th>
+        <th scope="col">{{ 'comun.nombre' | translate }}</th>
+        <th scope="col">{{ 'comun.categoria' | translate }}</th>
+        <th scope="col">{{ 'comun.precio' | translate }}</th>
+        <th scope="col">{{ 'admin.productos.stock' | translate }}</th>
+        <th scope="col">{{ 'admin.productos.visibleCorto' | translate }}</th>
+        <th scope="col">{{ 'comun.acciones' | translate }}</th>
       </tr>
     </thead>
     <tbody>
@@ -124,7 +146,7 @@
           <td>{{ p.precio | currency:'COP':'symbol-narrow':'1.0-0' }}</td>
           <td>
             @if (p.bajoPedido) {
-              <span class="badge text-bg-info">Bajo pedido</span>
+              <span class="badge text-bg-info">{{ 'comun.bajoPedido' | translate }}</span>
             } @else if (p.stock === 0) {
               <span class="badge text-bg-danger">0</span>
             } @else if (p.stock <= 3) {
@@ -133,12 +155,14 @@
               {{ p.stock }}
             }
           </td>
-          <td>{{ p.activo ? 'Sí' : 'No' }}</td>
+          <td>{{ (p.activo ? 'comun.si' : 'comun.no') | translate }}</td>
           <td class="text-nowrap">
-            <button class="btn btn-outline-primary btn-sm" (click)="editar(p)" [attr.aria-label]="'Editar ' + p.nombre">
+            <button class="btn btn-outline-primary btn-sm" (click)="editar(p)"
+                    [attr.aria-label]="('comun.editar' | translate) + ': ' + p.nombre">
               <i class="bi bi-pencil" aria-hidden="true"></i>
             </button>
-            <button class="btn btn-outline-danger btn-sm ms-1" (click)="eliminar(p)" [attr.aria-label]="'Eliminar ' + p.nombre">
+            <button class="btn btn-outline-danger btn-sm ms-1" (click)="eliminar(p)"
+                    [attr.aria-label]="('comun.eliminar' | translate) + ': ' + p.nombre">
               <i class="bi bi-trash" aria-hidden="true"></i>
             </button>
           </td>

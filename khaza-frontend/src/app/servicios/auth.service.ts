@@ -1,46 +1,52 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, of, throwError } from 'rxjs';
+import { Observable, tap } from 'rxjs';
 
-import { USUARIOS } from '../datos-prueba';
-import { Usuario } from '../modelos';
+import { RespuestaLogin, Usuario } from '../modelos';
+import { API } from './api.service';
 
-// Inicio de sesión SIMULADO (Fase 1): compara contra la lista de usuarios de prueba.
-// En la Fase 5 login() llamará al back-end, que responde con un token JWT.
+// Inicio de sesión con la API.
+// Al entrar, la API responde un token JWT y los datos del usuario. Los dos se guardan en
+// localStorage: el token lo agrega el interceptor a cada petición, y el usuario sirve para
+// mostrar su nombre y decidir qué menús se ven.
 @Injectable({ providedIn: 'root' })
 export class AuthService {
 
   usuario: Usuario | null = JSON.parse(localStorage.getItem('usuario') ?? 'null');
 
-  login(email: string, password: string): Observable<Usuario> {
-    const encontrado = USUARIOS.find(u => u.email === email && u.password === password);
-    if (!encontrado) {
-      return throwError(() => new Error('Correo o contraseña incorrectos'));
-    }
-    // Se guarda el usuario SIN la contraseña.
-    const usuario: Usuario = {
-      id: encontrado.id,
-      nombre: encontrado.nombre,
-      email: encontrado.email,
-      telefono: encontrado.telefono,
-      rol: encontrado.rol,
-    };
-    this.guardarSesion(usuario);
-    return of(usuario);
+  constructor(private http: HttpClient) {}
+
+  login(email: string, password: string): Observable<RespuestaLogin> {
+    return this.http.post<RespuestaLogin>(`${API}/auth/login`, { email, password })
+      .pipe(tap(respuesta => this.guardarSesion(respuesta.token, respuesta.usuario)));
   }
 
-  registrar(nombre: string, email: string, telefono: string, password: string): Observable<Usuario> {
-    if (USUARIOS.some(u => u.email === email)) {
-      return throwError(() => new Error('Ya existe una cuenta con ese correo'));
-    }
-    const usuario: Usuario = { id: USUARIOS.length + 1, nombre, email, telefono, rol: 'CLIENTE' };
-    USUARIOS.push({ ...usuario, password });
-    this.guardarSesion(usuario);
-    return of(usuario);
+  registrar(nombre: string, email: string, telefono: string, password: string, aceptaDatos: boolean): Observable<RespuestaLogin> {
+    return this.http.post<RespuestaLogin>(`${API}/auth/registro`, { nombre, email, telefono, password, aceptaDatos })
+      .pipe(tap(respuesta => this.guardarSesion(respuesta.token, respuesta.usuario)));
+  }
+
+  // Después de entrar con Google llega solo el token; con él se piden los datos del usuario.
+  completarLoginGoogle(token: string): Observable<Usuario> {
+    localStorage.setItem('token', token);
+    return this.http.get<Usuario>(`${API}/auth/yo`)
+      .pipe(tap(usuario => this.guardarSesion(token, usuario)));
+  }
+
+  // Dirección a la que hay que ir para iniciar sesión con Google (OAuth 2.0).
+  // También pasa por el proxy de Angular hacia el back-end.
+  urlLoginGoogle(): string {
+    return '/oauth2/authorization/google';
   }
 
   logout(): void {
     this.usuario = null;
     localStorage.removeItem('usuario');
+    localStorage.removeItem('token');
+  }
+
+  token(): string | null {
+    return localStorage.getItem('token');
   }
 
   estaLogueado(): boolean {
@@ -51,8 +57,9 @@ export class AuthService {
     return this.usuario?.rol === 'ADMIN';
   }
 
-  private guardarSesion(usuario: Usuario): void {
+  private guardarSesion(token: string, usuario: Usuario): void {
     this.usuario = usuario;
+    localStorage.setItem('token', token);
     localStorage.setItem('usuario', JSON.stringify(usuario));
   }
 }

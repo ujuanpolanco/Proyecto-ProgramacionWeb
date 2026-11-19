@@ -1,0 +1,70 @@
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
+  <h1 class="h2 mb-0">{{ 'admin.reportes.titulo' | translate }}</h1>
+  <button class="btn btn-khaza" (click)="descargarPdf()" [disabled]="descargando">
+    <i class="bi bi-file-earmark-pdf" aria-hidden="true"></i>
+    {{ (descargando ? 'admin.reportes.generando' : 'admin.reportes.descargar') | translate }}
+  </button>
+</div>
+
+@if (error) {
+  <div class="alert alert-danger" role="alert">{{ error | translate }}</div>
+}
+
+<div class="row g-4">
+  <section class="col-lg-7">
+    <h2 class="h5">{{ 'admin.reportes.porProducto' | translate }}</h2>
+    <div class="table-responsive">
+      <table class="table align-middle bg-white">
+        <thead>
+          <tr>
+            <th scope="col">{{ 'comun.producto' | translate }}</th>
+            <th scope="col" class="text-end">{{ 'admin.reportes.unidades' | translate }}</th>
+            <th scope="col" class="text-end">{{ 'admin.pedidos.totalVendido' | translate }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (venta of ventas; track venta.producto) {
+            <tr>
+              <td>{{ venta.producto }}</td>
+              <td class="text-end">{{ venta.unidades }}</td>
+              <td class="text-end">{{ venta.totalVendido | currency:'COP':'symbol-narrow':'1.0-0' }}</td>
+            </tr>
+          } @empty {
+            <tr><td colspan="3" class="text-center text-muted">{{ 'admin.pedidos.vacio' | translate }}</td></tr>
+          }
+        </tbody>
+        <tfoot>
+          <tr class="fw-bold">
+            <td>{{ 'comun.total' | translate }}</td>
+            <td class="text-end">{{ totalUnidades() }}</td>
+            <td class="text-end">{{ totalVendido() | currency:'COP':'symbol-narrow':'1.0-0' }}</td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+  </section>
+
+  <section class="col-lg-5">
+    <h2 class="h5">{{ 'admin.reportes.porEstado' | translate }}</h2>
+    <div class="table-responsive">
+      <table class="table align-middle bg-white">
+        <thead>
+          <tr>
+            <th scope="col">{{ 'admin.pedidos.estado' | translate }}</th>
+            <th scope="col" class="text-end">{{ 'admin.pedidos.cantidad' | translate }}</th>
+            <th scope="col" class="text-end">{{ 'comun.total' | translate }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (fila of estados; track fila.estado) {
+            <tr>
+              <td>{{ 'estado.' + fila.estado | translate }}</td>
+              <td class="text-end">{{ fila.cantidad }}</td>
+              <td class="text-end">{{ fila.total | currency:'COP':'symbol-narrow':'1.0-0' }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+</div>

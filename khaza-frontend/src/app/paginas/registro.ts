@@ -1,13 +1,19 @@
-import { Component } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
+import { TranslatePipe } from '@ngx-translate/core';
 
+import { mensajeDeError } from '../servicios/api.service';
 import { AuthService } from '../servicios/auth.service';
 import { CarritoService } from '../servicios/carrito.service';
 
 @Component({
   selector: 'app-registro',
-  imports: [FormsModule, RouterLink],
+  // Eager: Angular vuelve a revisar este componente cada vez que cambia algo (por ejemplo, cuando
+  // llega la respuesta de la API). Desde Angular 22 el valor por defecto es OnPush.
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [FormsModule, RouterLink, TranslatePipe],
   templateUrl: './registro.html',
 })
 export class Registro {
@@ -26,11 +32,13 @@ export class Registro {
     if (formulario.invalid || this.password !== this.confirmacion) {
       return;
     }
-    this.auth.registrar(this.nombre, this.email, this.telefono, this.password).subscribe({
+    this.error = '';
+    this.auth.registrar(this.nombre, this.email, this.telefono, this.password, this.aceptaDatos).subscribe({
       // Si ya tenía productos en el carrito, lo llevamos a terminar la compra.
       next: () => this.router.navigate([this.carrito.items.length > 0 ? '/carrito' : '/']),
-      error: (e: Error) => {
-        this.error = e.message;
+      // Por ejemplo 409 "Ya existe una cuenta con ese correo"
+      error: (e: HttpErrorResponse) => {
+        this.error = mensajeDeError(e);
       },
     });
   }
