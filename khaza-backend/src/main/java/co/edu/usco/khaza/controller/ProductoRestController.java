@@ -21,6 +21,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
@@ -63,7 +64,10 @@ public class ProductoRestController {
 	 */
 	@Operation(summary = "Crear un producto", description = "Crea un producto nuevo. La categoría se envía como {\"id\": 1}.")
 	@ApiResponses({ @ApiResponse(responseCode = "201", description = "Producto creado"),
-			@ApiResponse(responseCode = "400", description = "Datos no válidos o la categoría no existe", content = @Content) })
+			@ApiResponse(responseCode = "400", description = "Datos no válidos o la categoría no existe", content = @Content),
+			@ApiResponse(responseCode = "401", description = "Falta el token o no es válido", content = @Content),
+			@ApiResponse(responseCode = "403", description = "Solo el administrador", content = @Content) })
+	@SecurityRequirement(name = "bearer")
 	@PostMapping
 	public ResponseEntity<Producto> crear(@Valid @RequestBody Producto producto) {
 		return ResponseEntity.status(HttpStatus.CREATED).body(productoService.crear(producto));
@@ -77,7 +81,10 @@ public class ProductoRestController {
 	@Operation(summary = "Actualizar un producto", description = "Cambia los datos de un producto. Si cambia el precio, el trigger lo registra en auditoria_precios.")
 	@ApiResponses({ @ApiResponse(responseCode = "200", description = "Producto actualizado"),
 			@ApiResponse(responseCode = "400", description = "Datos no válidos o la categoría no existe", content = @Content),
-			@ApiResponse(responseCode = "404", description = "Producto no encontrado", content = @Content) })
+			@ApiResponse(responseCode = "404", description = "Producto no encontrado", content = @Content),
+			@ApiResponse(responseCode = "401", description = "Falta el token o no es válido", content = @Content),
+			@ApiResponse(responseCode = "403", description = "Solo el administrador", content = @Content) })
+	@SecurityRequirement(name = "bearer")
 	@PutMapping("/{id}")
 	public Producto actualizar(@Parameter(description = "ID del producto", required = true) @PathVariable Integer id,
 			@Valid @RequestBody Producto producto) {
@@ -91,7 +98,10 @@ public class ProductoRestController {
 	@Operation(summary = "Eliminar un producto", description = "Elimina un producto que todavía no se haya vendido.")
 	@ApiResponses({ @ApiResponse(responseCode = "204", description = "Producto eliminado"),
 			@ApiResponse(responseCode = "404", description = "Producto no encontrado", content = @Content),
-			@ApiResponse(responseCode = "409", description = "El producto ya tiene ventas", content = @Content) })
+			@ApiResponse(responseCode = "409", description = "El producto ya tiene ventas", content = @Content),
+			@ApiResponse(responseCode = "401", description = "Falta el token o no es válido", content = @Content),
+			@ApiResponse(responseCode = "403", description = "Solo el administrador", content = @Content) })
+	@SecurityRequirement(name = "bearer")
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Void> eliminar(@Parameter(description = "ID del producto", required = true) @PathVariable Integer id) {
 		productoService.eliminar(id);

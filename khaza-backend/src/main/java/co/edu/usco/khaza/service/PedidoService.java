@@ -19,7 +19,6 @@ import co.edu.usco.khaza.model.Producto;
 import co.edu.usco.khaza.model.Usuario;
 import co.edu.usco.khaza.repository.PedidoRepository;
 import co.edu.usco.khaza.repository.ProductoRepository;
-import co.edu.usco.khaza.repository.UsuarioRepository;
 
 /**
  * Lógica de negocio de pedidos: crearlos, listarlos y cambiarles el estado.
@@ -37,9 +36,6 @@ public class PedidoService {
 
 	@Autowired
 	private ProductoRepository productoRepository;
-
-	@Autowired
-	private UsuarioRepository usuarioRepository;
 
 	/** @return todos los pedidos, del más reciente al más antiguo (para el administrador) */
 	public List<Pedido> listar() {
@@ -67,15 +63,13 @@ public class PedidoService {
 	 * productos que vienen en la respuesta es el de antes de la compra. Para ver el
 	 * stock nuevo hay que volver a consultar GET /api/productos.
 	 *
-	 * @param datos lo que envió el cliente desde el carrito
+	 * @param usuario el cliente que tiene la sesión iniciada
+	 * @param datos   lo que envió el cliente desde el carrito
 	 * @return el pedido guardado, con su id y su total
 	 * @throws ResponseStatusException 400 si algún dato no es válido, 409 si no alcanza el stock
 	 */
 	@Transactional
-	public Pedido crear(PedidoRequest datos) {
-		Usuario usuario = usuarioRepository.findById(datos.getUsuarioId())
-				.orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "El usuario no existe"));
-
+	public Pedido crear(Usuario usuario, PedidoRequest datos) {
 		Pedido pedido = new Pedido();
 		pedido.setUsuario(usuario);
 		pedido.setFecha(LocalDateTime.now());

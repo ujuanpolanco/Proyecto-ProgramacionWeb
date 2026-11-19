@@ -57,7 +57,7 @@ INNER JOIN productos p ON p.id = a.producto_id;
 
 
 -- ---------------------------------------------------------------------
--- CONSULTAS DE EJEMPLO (las usará el reporte de ventas de la Fase 6)
+-- CONSULTAS DE EJEMPLO (las mismas que usa el reporte de ventas, ReporteDao.java)
 -- ---------------------------------------------------------------------
 
 -- Unidades vendidas y dinero recibido por cada producto

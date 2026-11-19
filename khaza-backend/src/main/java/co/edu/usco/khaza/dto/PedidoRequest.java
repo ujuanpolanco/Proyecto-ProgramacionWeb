@@ -13,7 +13,8 @@ import lombok.Data;
 
 /**
  * Datos que envía el front-end para crear un pedido. No es una entidad: es
- * solo lo que el cliente llena en el carrito. El total y los precios NO vienen
+ * solo lo que el cliente llena en el carrito. El cliente no viene aquí: sale
+ * del token JWT de quien hace la petición. El total y los precios NO vienen
  * aquí; los calcula el servidor con los precios de la base de datos, para que
  * nadie pueda cambiarlos desde el navegador.
  *
@@ -22,10 +23,6 @@ import lombok.Data;
 @Data
 @Schema(description = "Datos para crear un pedido")
 public class PedidoRequest {
-
-	@NotNull(message = "El usuario es obligatorio")
-	@Schema(example = "2")
-	private Integer usuarioId;
 
 	@NotBlank(message = "La dirección es obligatoria")
 	@Size(min = 5, max = 200, message = "La dirección debe tener entre 5 y 200 caracteres")

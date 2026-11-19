@@ -21,12 +21,13 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
 /**
  * Servicio web RESTful de categorías: recibe y devuelve JSON. Se prueba en
- * Swagger (http://localhost:8080/swagger-ui.html) o con Postman.
+ * Swagger (https://localhost:8443/swagger-ui.html) o con Postman.
  *
  * @author Juan Manuel Polanco
  */
@@ -66,7 +67,10 @@ public class CategoriaRestController {
 	@Operation(summary = "Crear una categoría", description = "Crea una categoría nueva. El ID lo genera la base de datos.")
 	@ApiResponses({ @ApiResponse(responseCode = "201", description = "Categoría creada"),
 			@ApiResponse(responseCode = "400", description = "Datos no válidos", content = @Content),
-			@ApiResponse(responseCode = "409", description = "Ya existe una categoría con ese nombre", content = @Content) })
+			@ApiResponse(responseCode = "409", description = "Ya existe una categoría con ese nombre", content = @Content),
+			@ApiResponse(responseCode = "401", description = "Falta el token o no es válido", content = @Content),
+			@ApiResponse(responseCode = "403", description = "Solo el administrador", content = @Content) })
+	@SecurityRequirement(name = "bearer")
 	@PostMapping
 	public ResponseEntity<Categoria> crear(@Valid @RequestBody Categoria categoria) {
 		return ResponseEntity.status(HttpStatus.CREATED).body(categoriaService.crear(categoria));
@@ -81,7 +85,10 @@ public class CategoriaRestController {
 	@ApiResponses({ @ApiResponse(responseCode = "200", description = "Categoría actualizada"),
 			@ApiResponse(responseCode = "400", description = "Datos no válidos", content = @Content),
 			@ApiResponse(responseCode = "404", description = "Categoría no encontrada", content = @Content),
-			@ApiResponse(responseCode = "409", description = "Ya existe una categoría con ese nombre", content = @Content) })
+			@ApiResponse(responseCode = "409", description = "Ya existe una categoría con ese nombre", content = @Content),
+			@ApiResponse(responseCode = "401", description = "Falta el token o no es válido", content = @Content),
+			@ApiResponse(responseCode = "403", description = "Solo el administrador", content = @Content) })
+	@SecurityRequirement(name = "bearer")
 	@PutMapping("/{id}")
 	public Categoria actualizar(
 			@Parameter(description = "ID de la categoría", required = true) @PathVariable Integer id,
@@ -96,7 +103,10 @@ public class CategoriaRestController {
 	@Operation(summary = "Eliminar una categoría", description = "Elimina una categoría que no tenga productos.")
 	@ApiResponses({ @ApiResponse(responseCode = "204", description = "Categoría eliminada"),
 			@ApiResponse(responseCode = "404", description = "Categoría no encontrada", content = @Content),
-			@ApiResponse(responseCode = "409", description = "La categoría tiene productos", content = @Content) })
+			@ApiResponse(responseCode = "409", description = "La categoría tiene productos", content = @Content),
+			@ApiResponse(responseCode = "401", description = "Falta el token o no es válido", content = @Content),
+			@ApiResponse(responseCode = "403", description = "Solo el administrador", content = @Content) })
+	@SecurityRequirement(name = "bearer")
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Void> eliminar(
 			@Parameter(description = "ID de la categoría", required = true) @PathVariable Integer id) {

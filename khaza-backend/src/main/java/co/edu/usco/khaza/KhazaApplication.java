@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
  * Clase principal del back-end de KHAZA. Al ejecutarla arranca el servidor en
- * http://localhost:8080 y la documentación en /swagger-ui.html.
+ * https://localhost:8443 y la documentación en /swagger-ui.html.
  *
  * @author Juan Manuel Polanco
  */

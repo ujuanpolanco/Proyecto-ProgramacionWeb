@@ -164,7 +164,7 @@ DELIMITER ;
 
 -- =====================================================================
 -- 4. DATOS DE EJEMPLO
--- Son los mismos que muestra el front-end en datos-prueba.ts.
+-- Productos reales de KHAZA (las fotos están en khaza-frontend/public/img/productos).
 -- =====================================================================
 
 INSERT INTO roles (id, nombre) VALUES
