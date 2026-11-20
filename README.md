@@ -67,20 +67,20 @@ Usuarios de prueba:
 
 ## 5. Inicio de sesión con Google (OAuth 2.0)
 
-El código ya está listo; solo faltan las credenciales, que se crean con una cuenta de Google:
+Las credenciales se crean con una cuenta de Google y **no se suben al repositorio**:
 
-1. Entrar a <https://console.cloud.google.com>, crear un proyecto y configurar la pantalla de
-   consentimiento OAuth (tipo "Externo", con tu correo como usuario de prueba).
-2. *APIs y servicios → Credenciales → Crear credenciales → ID de cliente de OAuth* → tipo
-   "Aplicación web".
-3. En **URI de redireccionamiento autorizados** agregar: `https://localhost:4200/login/oauth2/code/google`
-4. Copiar el ID y el secreto, y arrancar el back-end con ellos (PowerShell):
+1. Entrar a <https://console.cloud.google.com>, crear un proyecto y, en *Google Auth Platform*,
+   configurar la app (público "Usuarios externos").
+2. En *Público → Usuarios de prueba* agregar los correos que van a probar el login (mientras la app
+   esté en modo "Prueba", solo esas cuentas pueden entrar).
+3. *Clientes → Crear cliente* → tipo "Aplicación web". En **URI de redireccionamiento autorizados**
+   agregar: `https://localhost:4200/login/oauth2/code/google`
+4. Copiar `khaza-backend/google.properties.ejemplo` como `khaza-backend/google.properties` y escribir
+   ahí el ID y el secreto. Ese archivo está en el `.gitignore`.
+5. Arrancar el back-end normalmente (`./mvnw spring-boot:run`): lee `google.properties` solo.
 
-```powershell
-$env:GOOGLE_CLIENT_ID = "el-id-que-da-google"
-$env:GOOGLE_CLIENT_SECRET = "el-secreto-que-da-google"
-./mvnw spring-boot:run
-```
+También se pueden usar las variables de entorno `GOOGLE_CLIENT_ID` y `GOOGLE_CLIENT_SECRET` en vez del
+archivo.
 
 ## 6. API REST
 

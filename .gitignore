@@ -5,3 +5,6 @@ khaza-backend/target/
 .idea/
 .DS_Store
 Thumbs.db
+
+# Credenciales de Google (no se suben)
+khaza-backend/google.properties

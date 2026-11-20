@@ -1,0 +1,5 @@
+# Copiar este archivo como "google.properties" (en esta misma carpeta) y poner los datos
+# que da Google Cloud en APIs y servicios -> Credenciales -> ID de cliente de OAuth.
+# google.properties está en el .gitignore: el secreto nunca se sube a GitHub.
+GOOGLE_CLIENT_ID=pegar-aqui-el-id-de-cliente.apps.googleusercontent.com
+GOOGLE_CLIENT_SECRET=pegar-aqui-el-secreto
