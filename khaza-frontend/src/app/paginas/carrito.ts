@@ -11,8 +11,8 @@ import { AuthService } from '../servicios/auth.service';
 import { CarritoService } from '../servicios/carrito.service';
 
 // Número de WhatsApp de KHAZA, con el indicativo de Colombia (57), sin espacios ni signo +.
-// TODO: cambiar por el número real del emprendimiento.
-const WHATSAPP_KHAZA = '573000000000';
+// Para la demostración del proyecto se usa el celular del autor (320 976 4723).
+const WHATSAPP_KHAZA = '573209764723';
 
 // Toda la compra en una sola página:
 //   1. Arriba, los productos del carrito (cambiar cantidad, quitar, total).
