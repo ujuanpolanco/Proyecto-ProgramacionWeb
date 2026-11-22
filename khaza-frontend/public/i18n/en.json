@@ -78,6 +78,7 @@
     "agregar": "Add to cart",
     "agotadoAviso": "This product is sold out for now.",
     "agregado": "Product added to the cart.",
+    "eligeTalla": "Choose your size",
     "notaDespues": "You write the personalization note in the cart, when you confirm your order.",
     "verCarrito": "View cart",
     "noEncontrado": "We couldn't find that product.",
@@ -143,6 +144,11 @@
     "error": "Google sign-in couldn't be completed."
   },
   "misPedidos": {
+    "ayuda": {
+      "PENDIENTE": "KHAZA has not shipped it yet. If you have not done so, confirm it on WhatsApp.",
+      "ENVIADO": "It is on its way to your address.",
+      "ENTREGADO": "You already received it. Thank you for your purchase!"
+    },
     "titulo": "My orders",
     "pedido": "Order",
     "personalizacion": "Personalization",
@@ -209,6 +215,7 @@
       "productos": "Products",
       "estado": "Status",
       "estadoDe": "Status of order",
+      "confirmar": "Mark order #{{id}} as {{estado}}?",
       "guardado": "Order #{{id}} marked as {{estado}}.",
       "vacio": "There are no orders yet."
     },

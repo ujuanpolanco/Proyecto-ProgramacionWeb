@@ -49,8 +49,8 @@
         <tr>
           <td>{{ pedido.id }}</td>
           <td>
-            <select class="form-select form-select-sm" [ngModel]="pedido.estado"
-                    (ngModelChange)="cambiarEstado(pedido, $event)"
+            <select #selector class="form-select form-select-sm" [ngModel]="pedido.estado"
+                    (ngModelChange)="cambiarEstado(pedido, $event, selector)"
                     [attr.aria-label]="('admin.pedidos.estadoDe' | translate) + ' ' + pedido.id">
               @for (estado of estados; track estado) {
                 <option [value]="estado">{{ 'estado.' + estado | translate }}</option>

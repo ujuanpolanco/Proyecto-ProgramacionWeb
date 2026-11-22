@@ -24,6 +24,7 @@ export class Detalle implements OnInit {
   cargando = true;
   tallas: string[] = [];
   tallaElegida = '';
+  faltaTalla = false;  // se pone en true si intenta agregar sin elegir talla
   cantidad = 1;
   // Si lo que ya está en el carrito más lo nuevo supera el máximo
   superaStock: { enCarrito: number; disponibles: number } | null = null;
@@ -39,7 +40,8 @@ export class Detalle implements OnInit {
         if (producto.activo) {
           this.producto = producto;
           this.tallas = producto.tallas.split(',');  // "S,M,L" → ["S", "M", "L"]
-          this.tallaElegida = this.tallas[0];
+          // Si hay una sola talla (por ejemplo "Única") se deja elegida; si no, el cliente la escoge
+          this.tallaElegida = this.tallas.length === 1 ? this.tallas[0] : '';
         }
         this.cargando = false;
       },
@@ -66,7 +68,8 @@ export class Detalle implements OnInit {
   }
 
   agregarAlCarrito(): void {
-    if (!this.cantidadValida()) {
+    this.faltaTalla = this.tallaElegida === '';
+    if (this.faltaTalla || !this.cantidadValida()) {
       return;
     }
     // También se cuenta lo que ya está en el carrito (de cualquier talla)

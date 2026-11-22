@@ -41,11 +41,14 @@
         <form class="row g-3" (ngSubmit)="agregarAlCarrito()">
           <div class="col-6">
             <label for="talla" class="form-label">{{ 'comun.talla' | translate }}</label>
-            <select id="talla" name="talla" class="form-select" [(ngModel)]="tallaElegida">
+            <select id="talla" name="talla" class="form-select" [(ngModel)]="tallaElegida"
+                    [class.is-invalid]="faltaTalla" [attr.aria-invalid]="faltaTalla" aria-describedby="talla-error">
+              <option value="" disabled>{{ 'detalle.eligeTalla' | translate }}</option>
               @for (talla of tallas; track talla) {
                 <option [value]="talla">{{ talla }}</option>
               }
             </select>
+            <div id="talla-error" class="invalid-feedback">{{ 'detalle.eligeTalla' | translate }}</div>
           </div>
           <div class="col-6">
             <label for="cantidad" class="form-label">{{ 'comun.cantidad' | translate }}</label>

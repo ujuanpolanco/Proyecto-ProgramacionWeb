@@ -78,6 +78,7 @@
     "agregar": "Agregar al carrito",
     "agotadoAviso": "Este producto está agotado por ahora.",
     "agregado": "Producto agregado al carrito.",
+    "eligeTalla": "Elige tu talla",
     "notaDespues": "La nota de personalización la escribes en el carrito, al confirmar tu pedido.",
     "verCarrito": "Ver carrito",
     "noEncontrado": "No encontramos ese producto.",
@@ -143,6 +144,11 @@
     "error": "No se pudo completar el inicio de sesión con Google."
   },
   "misPedidos": {
+    "ayuda": {
+      "PENDIENTE": "KHAZA aún no lo envía. Si no lo has hecho, confírmalo por WhatsApp.",
+      "ENVIADO": "Va en camino a tu dirección.",
+      "ENTREGADO": "Ya lo recibiste. ¡Gracias por tu compra!"
+    },
     "titulo": "Mis pedidos",
     "pedido": "Pedido",
     "personalizacion": "Personalización",
@@ -209,6 +215,7 @@
       "productos": "Productos",
       "estado": "Estado",
       "estadoDe": "Estado del pedido",
+      "confirmar": "¿Marcar el pedido #{{id}} como {{estado}}?",
       "guardado": "Pedido #{{id}} marcado como {{estado}}.",
       "vacio": "Todavía no hay pedidos."
     },

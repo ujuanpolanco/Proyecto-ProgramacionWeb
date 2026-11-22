@@ -5,6 +5,7 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
 
 import { mensajeDeError } from '../servicios/api.service';
+import { CarritoService } from '../servicios/carrito.service';
 import { AuthService } from '../servicios/auth.service';
 
 @Component({
@@ -22,17 +23,20 @@ export class Login {
   error = '';
   errorGoogle: string | null = null;
 
-  constructor(public auth: AuthService, private router: Router, private route: ActivatedRoute) {
+  constructor(public auth: AuthService, private carrito: CarritoService, private router: Router, private route: ActivatedRoute) {
     // Si el back-end devolvió aquí después de un intento fallido con Google:
     // /login?error=google (falló), ?error=clave (el correo tiene contraseña) o ?error=desactivada
     this.errorGoogle = this.route.snapshot.queryParamMap.get('error');
   }
 
+  enviando = false;  // mientras espera la respuesta, el botón muestra que está trabajando
+
   ingresar(formulario: NgForm): void {
-    if (formulario.invalid) {
+    if (formulario.invalid || this.enviando) {
       return;
     }
     this.error = '';
+    this.enviando = true;
     this.auth.login(this.email, this.password).subscribe({
       next: respuesta => {
         // Si llegó aquí desde otra página (?volver=/carrito), regresa a esa página.
@@ -40,10 +44,12 @@ export class Login {
         if (volver) {
           this.router.navigateByUrl(volver);
         } else {
-          this.router.navigate([respuesta.usuario.rol === 'ADMIN' ? '/admin/pedidos' : '/']);
+          this.router.navigate([respuesta.usuario.rol === 'ADMIN' ? '/admin/pedidos'
+            : this.carrito.items.length > 0 ? '/carrito' : '/']);  // si tenía productos, a terminar la compra
         }
       },
       error: (e: HttpErrorResponse) => {
+        this.enviando = false;
         this.error = mensajeDeError(e);
       },
     });

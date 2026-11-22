@@ -14,6 +14,7 @@
       <span class="badge {{ colorEstado(pedido.estado) }}">{{ 'estado.' + pedido.estado | translate }}</span>
     </div>
     <div class="card-body">
+      <p class="small text-muted">{{ 'misPedidos.ayuda.' + pedido.estado | translate }}</p>
       <ul class="mb-2">
         @for (detalle of pedido.detalles; track $index) {
           <li>{{ detalle.cantidad }} × {{ detalle.producto.nombre }} ({{ 'comun.talla' | translate }} {{ detalle.talla }}) —

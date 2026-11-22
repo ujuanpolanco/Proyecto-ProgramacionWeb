@@ -70,7 +70,13 @@
           <div id="aceptaDatos-error" class="invalid-feedback">{{ 'registro.aceptarError' | translate }}</div>
         </div>
 
-        <button type="submit" class="btn btn-khaza w-100">{{ 'registro.crear' | translate }}</button>
+        <button type="submit" class="btn btn-khaza w-100" [disabled]="enviando">
+          @if (enviando) {
+            <span class="spinner-border spinner-border-sm" aria-hidden="true"></span> {{ 'comun.cargando' | translate }}
+          } @else {
+            {{ 'registro.crear' | translate }}
+          }
+        </button>
       </form>
 
       <p class="mt-3 mb-0 text-center">{{ 'registro.yaTienes' | translate }} <a routerLink="/login">{{ 'registro.inicia' | translate }}</a></p>

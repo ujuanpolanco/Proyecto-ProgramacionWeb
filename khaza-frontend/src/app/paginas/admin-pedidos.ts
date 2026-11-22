@@ -41,7 +41,14 @@ export class AdminPedidos implements OnInit {
     });
   }
 
-  cambiarEstado(pedido: Pedido, estado: EstadoPedido): void {
+  cambiarEstado(pedido: Pedido, estado: EstadoPedido, selector: HTMLSelectElement): void {
+    // Pregunta antes de guardar; si el propietario cancela, el selector vuelve a como estaba
+    const pregunta = this.traductor.instant('admin.pedidos.confirmar',
+      { id: pedido.id, estado: this.traductor.instant('estado.' + estado) });
+    if (!confirm(pregunta)) {
+      selector.value = pedido.estado;
+      return;
+    }
     const anterior = pedido.estado;
     pedido.estado = estado;
     this.error = '';

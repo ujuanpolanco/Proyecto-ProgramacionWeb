@@ -32,7 +32,13 @@
                  [attr.aria-invalid]="campoPassword.invalid && (campoPassword.touched || formulario.submitted)" aria-describedby="password-error">
           <div id="password-error" class="invalid-feedback">{{ 'login.passwordError' | translate }}</div>
         </div>
-        <button type="submit" class="btn btn-khaza w-100">{{ 'login.entrar' | translate }}</button>
+        <button type="submit" class="btn btn-khaza w-100" [disabled]="enviando">
+          @if (enviando) {
+            <span class="spinner-border spinner-border-sm" aria-hidden="true"></span> {{ 'comun.cargando' | translate }}
+          } @else {
+            {{ 'login.entrar' | translate }}
+          }
+        </button>
       </form>
 
       <!-- Inicio de sesión con Google (OAuth 2.0) -->

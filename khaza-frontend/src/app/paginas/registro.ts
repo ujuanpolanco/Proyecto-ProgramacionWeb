@@ -28,16 +28,20 @@ export class Registro {
 
   constructor(private auth: AuthService, private carrito: CarritoService, private router: Router) {}
 
+  enviando = false;  // mientras espera la respuesta, el botón muestra que está trabajando
+
   registrar(formulario: NgForm): void {
-    if (formulario.invalid || this.password !== this.confirmacion) {
+    if (this.enviando || formulario.invalid || this.password !== this.confirmacion) {
       return;
     }
     this.error = '';
+    this.enviando = true;
     this.auth.registrar(this.nombre, this.email, this.telefono, this.password, this.aceptaDatos).subscribe({
       // Si ya tenía productos en el carrito, lo llevamos a terminar la compra.
       next: () => this.router.navigate([this.carrito.items.length > 0 ? '/carrito' : '/']),
       // Por ejemplo 409 "Ya existe una cuenta con ese correo"
       error: (e: HttpErrorResponse) => {
+        this.enviando = false;
         this.error = mensajeDeError(e);
       },
     });
