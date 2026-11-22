@@ -29,7 +29,7 @@
         <tr>
           <th scope="col">{{ 'comun.producto' | translate }}</th>
           <th scope="col">{{ 'comun.talla' | translate }}</th>
-          <th scope="col">{{ 'comun.precio' | translate }}</th>
+          <th scope="col" class="d-none d-md-table-cell">{{ 'comun.precio' | translate }}</th>
           <th scope="col" class="col-cantidad">{{ 'comun.cantidad' | translate }}</th>
           <th scope="col">{{ 'carrito.subtotal' | translate }}</th>
           <th scope="col"><span class="visually-hidden">{{ 'comun.acciones' | translate }}</span></th>
@@ -40,7 +40,7 @@
           <tr>
             <td>{{ item.producto.nombre }}</td>
             <td>{{ item.talla }}</td>
-            <td>{{ item.producto.precio | currency:'COP':'symbol-narrow':'1.0-0' }}</td>
+            <td class="d-none d-md-table-cell">{{ item.producto.precio | currency:'COP':'symbol-narrow':'1.0-0' }}</td>
             <td>
               <input type="number" class="form-control form-control-sm" min="0" step="1"
                      [(ngModel)]="item.cantidad" (change)="cambiarCantidad(i)"
@@ -60,7 +60,7 @@
   </div>
 
   <div class="d-flex justify-content-between align-items-center mb-4">
-    <button class="btn btn-outline-secondary btn-sm" (click)="carrito.vaciar()">{{ 'carrito.vaciar' | translate }}</button>
+    <button class="btn btn-outline-secondary btn-sm" (click)="vaciar()">{{ 'carrito.vaciar' | translate }}</button>
     <p class="fs-4 mb-0">{{ 'comun.total' | translate }}: <strong>{{ carrito.total() | currency:'COP':'symbol-narrow':'1.0-0' }}</strong></p>
   </div>
 

@@ -116,7 +116,7 @@
 <!-- Inventario -->
 @if (pocoStock().length > 0) {
   <div class="alert alert-warning">
-    {{ 'admin.productos.alertaStock' | translate: { cantidad: pocoStock().length } }}
+    {{ 'admin.productos.alertaStock' | translate: { cantidad: pocoStock().length, nombres: nombresPocoStock() } }}
   </div>
 }
 

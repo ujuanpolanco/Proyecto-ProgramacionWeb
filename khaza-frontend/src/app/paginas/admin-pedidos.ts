@@ -21,6 +21,7 @@ export class AdminPedidos implements OnInit {
   pedidos: Pedido[] = [];
   estados: EstadoPedido[] = ['PENDIENTE', 'ENVIADO', 'ENTREGADO'];
   error = '';
+  mensaje = '';  // "Pedido #3 marcado como Enviado"
 
   constructor(private api: ApiService, private traductor: TranslateService) {}
 
@@ -44,7 +45,12 @@ export class AdminPedidos implements OnInit {
     const anterior = pedido.estado;
     pedido.estado = estado;
     this.error = '';
+    this.mensaje = '';
     this.api.cambiarEstadoPedido(pedido.id, estado).subscribe({
+      next: () => {
+        this.mensaje = this.traductor.instant('admin.pedidos.guardado',
+          { id: pedido.id, estado: this.traductor.instant('estado.' + estado) });
+      },
       error: (e: HttpErrorResponse) => {
         pedido.estado = anterior; // si falla, el selector vuelve a como estaba
         this.error = mensajeDeError(e);

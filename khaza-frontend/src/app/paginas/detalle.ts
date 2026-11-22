@@ -79,6 +79,6 @@ export class Detalle implements OnInit {
     this.carrito.agregar(this.producto!, this.tallaElegida, this.cantidad);
 
     // jQuery: el aviso aparece, espera 2 segundos y desaparece.
-    $('#aviso-carrito').stop(true, true).fadeIn(200).delay(2000).fadeOut(400);
+    $('#aviso-carrito').stop(true, true).fadeIn(200).delay(5000).fadeOut(400);
   }
 }

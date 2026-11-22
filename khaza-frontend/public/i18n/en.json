@@ -78,6 +78,7 @@
     "agregar": "Add to cart",
     "agotadoAviso": "This product is sold out for now.",
     "agregado": "Product added to the cart.",
+    "notaDespues": "You write the personalization note in the cart, when you confirm your order.",
     "verCarrito": "View cart",
     "noEncontrado": "We couldn't find that product.",
     "superaStock": "You already have {{enCarrito}} in the cart: you can add up to {{disponibles}} more."
@@ -89,6 +90,7 @@
     "subtotal": "Subtotal",
     "quitar": "Remove",
     "vaciar": "Empty cart",
+    "confirmarVaciar": "Are you sure you want to empty the cart?",
     "paraConfirmar": "To place the order,",
     "inicia": "log in",
     "o": "or",
@@ -188,7 +190,7 @@
       "bajoPedido": "Made to order (can be sold without stock)",
       "visible": "Visible in the catalog",
       "visibleCorto": "Visible",
-      "alertaStock": "Warning: {{cantidad}} product(s) with 3 units or fewer.",
+      "alertaStock": "Warning: {{cantidad}} product(s) with 3 units or fewer: {{nombres}}.",
       "materialEjemplo": "E.g. Iraca palm",
       "decoracionEjemplo": "E.g. Threads and beads",
       "tallasError": "Enter at least one size."
@@ -207,6 +209,7 @@
       "productos": "Products",
       "estado": "Status",
       "estadoDe": "Status of order",
+      "guardado": "Order #{{id}} marked as {{estado}}.",
       "vacio": "There are no orders yet."
     },
     "reportes": {

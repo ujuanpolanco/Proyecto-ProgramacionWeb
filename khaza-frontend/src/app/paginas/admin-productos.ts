@@ -59,6 +59,10 @@ export class AdminProductos implements OnInit {
   }
 
   // Productos que no son bajo pedido y les quedan 3 unidades o menos
+  nombresPocoStock(): string {
+    return this.pocoStock().map(p => p.nombre).join(', ');
+  }
+
   pocoStock(): Producto[] {
     return this.productos.filter(p => !p.bajoPedido && p.stock <= 3);
   }

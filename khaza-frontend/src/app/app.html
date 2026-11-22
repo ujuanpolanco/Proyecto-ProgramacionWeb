@@ -10,6 +10,12 @@
         <i class="bi bi-gem" aria-hidden="true"></i> KHAZA
       </a>
 
+      <!-- En el celular el carrito queda a la vista, fuera del menú ☰ -->
+      <a class="nav-link text-white d-lg-none ms-auto me-3" routerLink="/carrito" [attr.aria-label]="'menu.carrito' | translate">
+        <i class="bi bi-bag" aria-hidden="true"></i>
+        <span class="badge bg-light text-dark">{{ carrito.cantidadDeProductos() }}</span>
+      </a>
+
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menu"
               aria-controls="menu" aria-expanded="false" [attr.aria-label]="'menu.abrir' | translate">
         <span class="navbar-toggler-icon"></span>

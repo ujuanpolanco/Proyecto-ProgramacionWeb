@@ -78,6 +78,7 @@
     "agregar": "Agregar al carrito",
     "agotadoAviso": "Este producto está agotado por ahora.",
     "agregado": "Producto agregado al carrito.",
+    "notaDespues": "La nota de personalización la escribes en el carrito, al confirmar tu pedido.",
     "verCarrito": "Ver carrito",
     "noEncontrado": "No encontramos ese producto.",
     "superaStock": "Ya tienes {{enCarrito}} en el carrito: puedes agregar máximo {{disponibles}} más."
@@ -89,6 +90,7 @@
     "subtotal": "Subtotal",
     "quitar": "Quitar",
     "vaciar": "Vaciar carrito",
+    "confirmarVaciar": "¿Seguro que quieres vaciar el carrito?",
     "paraConfirmar": "Para confirmar el pedido",
     "inicia": "inicia sesión",
     "o": "o",
@@ -188,7 +190,7 @@
       "bajoPedido": "Se fabrica bajo pedido (se vende sin stock)",
       "visible": "Visible en el catálogo",
       "visibleCorto": "Visible",
-      "alertaStock": "Atención: {{cantidad}} producto(s) con 3 unidades o menos.",
+      "alertaStock": "Atención: {{cantidad}} producto(s) con 3 unidades o menos: {{nombres}}.",
       "materialEjemplo": "Ej: Palma de iraca",
       "decoracionEjemplo": "Ej: Hilos y mostacilla",
       "tallasError": "Escribe al menos una talla."
@@ -207,6 +209,7 @@
       "productos": "Productos",
       "estado": "Estado",
       "estadoDe": "Estado del pedido",
+      "guardado": "Pedido #{{id}} marcado como {{estado}}.",
       "vacio": "Todavía no hay pedidos."
     },
     "reportes": {

@@ -3,7 +3,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-import { TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 import { Pedido, PedidoNuevo } from '../modelos';
 import { ApiService, mensajeDeError } from '../servicios/api.service';
@@ -41,7 +41,8 @@ export class Carrito {
   pedidoCreado?: Pedido;
   enlaceWhatsapp = '';
 
-  constructor(public carrito: CarritoService, public auth: AuthService, private api: ApiService) {
+  constructor(public carrito: CarritoService, public auth: AuthService, private api: ApiService,
+              private traductor: TranslateService) {
     this.telefono = this.auth.usuario?.telefono ?? '';
   }
 
@@ -59,6 +60,13 @@ export class Carrito {
       item.cantidad = maximo;
     }
     this.carrito.guardar();
+  }
+
+  // Pregunta antes de borrar todo, porque no se puede deshacer
+  vaciar(): void {
+    if (confirm(this.traductor.instant('carrito.confirmarVaciar'))) {
+      this.carrito.vaciar();
+    }
   }
 
   confirmar(formulario: NgForm): void {

@@ -1,5 +1,5 @@
 import { AfterViewInit, ChangeDetectionStrategy, Component } from '@angular/core';
-import { Router, RouterLink, RouterLinkActive, RouterOutlet, TitleStrategy } from '@angular/router';
+import { NavigationEnd, Router, RouterLink, RouterLinkActive, RouterOutlet, TitleStrategy } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import $ from 'jquery';
 
@@ -26,6 +26,14 @@ export class App implements AfterViewInit {
     private titulos: TitleStrategy,
   ) {
     document.documentElement.lang = this.idioma();
+
+    // En el celular, el menú ☰ se cierra solo cuando el usuario cambia de página
+    this.router.events.subscribe(evento => {
+      if (evento instanceof NavigationEnd) {
+        $('#menu').removeClass('show');
+        $('.navbar-toggler').addClass('collapsed').attr('aria-expanded', 'false');
+      }
+    });
   }
 
   // jQuery: botón "volver arriba". Aparece con fadeIn cuando el usuario baja más de 400 px
