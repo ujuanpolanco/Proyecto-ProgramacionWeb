@@ -10,7 +10,7 @@ administración con inventario, gestión de pedidos y reporte de ventas en PDF.
 
 | Capa | Tecnología | Carpeta |
 |---|---|---|
-| Front-end | Angular 22, Bootstrap 5, jQuery, ngx-translate (español / inglés) | `khaza-frontend/` |
+| Front-end | Angular 22, Bootstrap 5, jQuery, ngx-translate (español, inglés y portugués) | `khaza-frontend/` |
 | Back-end | Java 21 + Spring Boot 3.5, Spring Security, JWT, OAuth 2.0, JPA, JDBC, Swagger, OpenPDF | `khaza-backend/` |
 | Base de datos | MySQL 8 o superior, con triggers | `base-datos/` |
 
@@ -101,3 +101,11 @@ archivo.
 | GET | `/api/reportes/ventas/pdf` | ADMIN | Reporte de ventas en PDF (OpenPDF) |
 
 Sin token, las rutas protegidas responden **401**; con un rol que no corresponde, **403**.
+
+## 7. Créditos de las fotos
+
+Las fotos de los sombreros son de KHAZA. Las de la camiseta y la chaqueta son fotos genéricas de
+Flickr con licencia Creative Commons Atribución 2.0 (CC BY 2.0), recortadas a 594 × 594 px:
+
+- `camiseta-khaza.jpg`: foto de Tradlands, <https://www.flickr.com/photo.gne?id=31026979315>
+- `chaqueta-bordada.jpg`: foto de Menswear Market, <https://www.flickr.com/photo.gne?id=14388620941>

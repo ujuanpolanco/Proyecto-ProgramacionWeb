@@ -25,9 +25,10 @@ export class AdminPedidos implements OnInit {
 
   constructor(private api: ApiService, private traductor: TranslateService) {}
 
-  // Formato de las fechas según el idioma: "3 nov 2026" o "Nov 3, 2026"
+  // Formato de las fechas según el idioma: "3 nov 2026", "Nov 3, 2026" o "3 de nov. de 2026"
   formatoFecha(): string {
-    return this.traductor.getCurrentLang() === 'en' ? 'en-US' : 'es-CO';
+    const formatos: Record<string, string> = { es: 'es-CO', en: 'en-US', pt: 'pt-BR' };
+    return formatos[this.traductor.getCurrentLang() ?? 'es'] ?? 'es-CO';
   }
 
   ngOnInit(): void {

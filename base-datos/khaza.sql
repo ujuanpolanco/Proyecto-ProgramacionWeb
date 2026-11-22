@@ -215,11 +215,11 @@ INSERT INTO productos (id, nombre, descripcion, precio, stock, material, decorac
     (6, 'Camiseta KHAZA',
         'Camiseta de algodón con el logo de KHAZA estampado al frente.',
         60000, 16, 'Algodón', 'Estampado', 'S,M,L,XL', FALSE,
-        NULL, 2),
+        'img/productos/camiseta-khaza.jpg', 2),
     (7, 'Chaqueta bordada',
         'Chaqueta de jean con bordado artesanal en la espalda. Se fabrica cuando se pide.',
         180000, 0, 'Jean', 'Bordado a mano', 'S,M,L', TRUE,
-        NULL, 2);
+        'img/productos/chaqueta-bordada.jpg', 2);
 
 INSERT INTO pedidos (id, usuario_id, fecha, estado, total, direccion, telefono, nota) VALUES
     (1, 2, '2026-10-28 10:15:00', 'ENTREGADO', 400000, 'Calle 8 # 5-20, Neiva', '3104445566',

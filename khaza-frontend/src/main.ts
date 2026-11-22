@@ -3,6 +3,7 @@
 import { registerLocaleData } from '@angular/common';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import localeEsCo from '@angular/common/locales/es-CO';
+import localePt from '@angular/common/locales/pt';
 import { LOCALE_ID, provideZoneChangeDetection } from '@angular/core';
 import { bootstrapApplication } from '@angular/platform-browser';
 import { TitleStrategy, provideRouter, withInMemoryScrolling } from '@angular/router';
@@ -16,6 +17,8 @@ import { TituloTraducido } from './app/titulo-traducido';
 
 // Formato colombiano para precios y fechas: "$ 200.000" y "3 nov 2026".
 registerLocaleData(localeEsCo);
+// Portugués, para las fechas cuando la tienda está en ese idioma: "3 de nov. de 2026".
+registerLocaleData(localePt, 'pt-BR');
 
 bootstrapApplication(App, {
   providers: [

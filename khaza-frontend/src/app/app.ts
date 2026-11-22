@@ -59,7 +59,7 @@ export class App implements AfterViewInit {
 
   // Cambia el idioma de toda la página y lo recuerda para la próxima visita.
   // También cambia <html lang="..."> para que los lectores de pantalla lean con la pronunciación correcta.
-  cambiarIdioma(idioma: 'es' | 'en'): void {
+  cambiarIdioma(idioma: 'es' | 'en' | 'pt'): void {
     this.traductor.use(idioma).subscribe(() => {
       // el título de la pestaña también cambia de idioma
       this.titulos.updateTitle(this.router.routerState.snapshot);
